@@ -481,4 +481,4 @@ If this project helped you or you like the idea, consider giving the repository 
 📄 License
 
 Add the license that you choose for this project before making the repository public.
-LINK : https://myprotfolio-snowy.vercel.app
+LINK : https://protfolio-maker.vercel.app
