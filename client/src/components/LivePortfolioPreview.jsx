@@ -1262,6 +1262,7 @@ const CertificateCard = ({
                                 transition
                                 hover:opacity-90
                             "
+                            download
                             style={{
                                 backgroundColor:
                                     primary
