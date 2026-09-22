@@ -178,7 +178,9 @@ const login = async(
                 secure: process.env.NODE_ENV ===
                     "production",
 
-                sameSite: "strict",
+                sameSite: process.env.NODE_ENV === "production"
+                    ? "none"
+                    : "lax",
 
                 maxAge: 7 *
                     24 *
@@ -270,7 +272,9 @@ const adminLogin = async(
                 secure: process.env.NODE_ENV ===
                     "production",
 
-                sameSite: "strict",
+                sameSite: process.env.NODE_ENV === "production"
+                    ? "none"
+                    : "lax",
 
                 maxAge: 7 *
                     24 *
