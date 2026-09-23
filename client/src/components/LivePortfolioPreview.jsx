@@ -1,4 +1,4 @@
-import {
+import{
     useEffect,
     useMemo,
     useState
@@ -2535,7 +2535,11 @@ const LivePortfolioPreview = ({
                     title="SEO Preview"
                 />
 
-                <div className="rounded-2xl border p-5 text-white">
+                <div className={`rounded-2xl border p-5 ${
+                    variant === "minimal"
+                        ? "text-slate-950"
+                        : "text-white"
+                }`}>
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em]">
                         Search result preview
                     </p>
@@ -2836,6 +2840,18 @@ const LivePortfolioPreview = ({
 
 
             <section id="preview-home" className="px-6 py-16 sm:px-12 sm:py-24">
+                <div className="mx-auto mb-8 flex justify-center">
+                    <div className="h-28 w-28 overflow-hidden rounded-full border border-slate-200 bg-slate-100 sm:h-36 sm:w-36">
+                        {form.profileImage ? (
+                            <img src={form.profileImage} alt={name} className="h-full w-full object-cover" />
+                        ) : (
+                            <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-slate-400">
+                                {name.charAt(0).toUpperCase()}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
                 <div className="mx-auto max-w-5xl">
                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
                         Portfolio · {form.location || "Independent Developer"}
@@ -3084,6 +3100,11 @@ const LivePortfolioPreview = ({
                         <div className="space-y-4">
                             {sortedPosts.map((post) => (
                                 <article key={post._id} className="border-b border-slate-200 pb-5 last:border-b-0">
+                                    {post.coverImage && getMediaType(post.coverImage) === "image" ? (
+                                        <div className="mb-5 h-44 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                                            <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
+                                        </div>
+                                    ) : null}
                                     <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-400">
                                         {post.postType ? <span>{post.postType}</span> : null}
                                         {post.publishedAt ? <span>· {formatDate(post.publishedAt)}</span> : null}
@@ -3091,6 +3112,13 @@ const LivePortfolioPreview = ({
                                     <h3 className="mt-2 text-xl font-semibold text-slate-950">{post.title}</h3>
                                     {post.excerpt ? <p className="mt-2 text-sm leading-7 text-slate-500">{post.excerpt}</p> : null}
                                     {post.content ? <p className="mt-2 line-clamp-3 text-xs leading-6 text-slate-400">{post.content}</p> : null}
+                                    {(post.githubUrl || post.demoUrl || post.externalUrl) ? (
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            {post.githubUrl ? <a href={post.githubUrl} target="_blank" rel="noreferrer" className="inline-flex border border-slate-300 px-3 py-2 text-[10px] font-semibold text-slate-700">GitHub ↗</a> : null}
+                                            {post.demoUrl ? <a href={post.demoUrl} target="_blank" rel="noreferrer" className="inline-flex border border-slate-300 px-3 py-2 text-[10px] font-semibold text-slate-700">Demo ↗</a> : null}
+                                            {post.externalUrl ? <a href={post.externalUrl} target="_blank" rel="noreferrer" className="inline-flex border border-slate-300 px-3 py-2 text-[10px] font-semibold text-slate-700">Open ↗</a> : null}
+                                        </div>
+                                    ) : null}
                                 </article>
                             ))}
                         </div>
@@ -3191,7 +3219,20 @@ const LivePortfolioPreview = ({
                         </div>
                     </div>
 
-                    <div className="rounded-xl border border-emerald-400/15 bg-[#040804] p-4 text-[10px] leading-6 text-slate-500">
+                    <div className="space-y-4">
+                        <div className="flex justify-center rounded-xl border border-emerald-400/15 bg-[#040804] p-4">
+                            <div className="h-36 w-36 overflow-hidden rounded-full border border-emerald-400/20 bg-[#050a05]">
+                                {form.profileImage ? (
+                                    <img src={form.profileImage} alt={name} className="h-full w-full object-cover" />
+                                ) : (
+                                    <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-emerald-400">
+                                        {name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="rounded-xl border border-emerald-400/15 bg-[#040804] p-4 text-[10px] leading-6 text-slate-500">
                         <p className="text-emerald-400">{`{`}</p>
                         <p><span className="text-purple-400">name:</span> "{name}"</p>
                         <p><span className="text-purple-400">projects:</span> {sortedProjects.length},</p>
@@ -3199,6 +3240,7 @@ const LivePortfolioPreview = ({
                         <p><span className="text-purple-400">certificates:</span> {sortedCertificates.length},</p>
                         <p><span className="text-purple-400">status:</span> "building"</p>
                         <p className="text-emerald-400">{`}`}</p>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -3340,6 +3382,11 @@ const LivePortfolioPreview = ({
                     <div className="mt-5 space-y-4">
                         {sortedPosts.map((post) => (
                             <article key={post._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
+                                {post.coverImage && getMediaType(post.coverImage) === "image" ? (
+                                    <div className="mb-4 h-40 overflow-hidden border border-emerald-400/10 bg-black/20">
+                                        <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
+                                    </div>
+                                ) : null}
                                 <div className="flex flex-wrap items-center gap-2 text-[9px] text-slate-600">
                                     {post.postType ? <span>{post.postType}</span> : null}
                                     {post.publishedAt ? <span>· {formatDate(post.publishedAt)}</span> : null}
@@ -3347,6 +3394,13 @@ const LivePortfolioPreview = ({
                                 <h3 className="mt-2 text-sm font-bold text-emerald-300">{post.title}</h3>
                                 {post.excerpt ? <p className="mt-2 text-xs leading-6 text-slate-500">{post.excerpt}</p> : null}
                                 {post.content ? <p className="mt-2 line-clamp-4 whitespace-pre-line text-[10px] leading-6 text-slate-600">{post.content}</p> : null}
+                                {(post.githubUrl || post.demoUrl || post.externalUrl) ? (
+                                    <div className="mt-4 flex flex-wrap gap-2">
+                                        {post.githubUrl ? <a href={post.githubUrl} target="_blank" rel="noreferrer" className="inline-flex border border-emerald-400/15 px-3 py-2 text-[9px] text-emerald-300">github ↗</a> : null}
+                                        {post.demoUrl ? <a href={post.demoUrl} target="_blank" rel="noreferrer" className="inline-flex border border-emerald-400/15 px-3 py-2 text-[9px] text-emerald-300">demo ↗</a> : null}
+                                        {post.externalUrl ? <a href={post.externalUrl} target="_blank" rel="noreferrer" className="inline-flex border border-emerald-400/15 px-3 py-2 text-[9px] text-emerald-300">open ↗</a> : null}
+                                    </div>
+                                ) : null}
                             </article>
                         ))}
                     </div>
@@ -3666,14 +3720,28 @@ const LivePortfolioPreview = ({
                     <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-fuchsia-200">07 · Posts</p>
                     <div className="mt-5 grid gap-4 md:grid-cols-2">
                         {sortedPosts.map((post, index) => (
-                            <article key={post._id} className={`rounded-[1.5rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl ${index % 2 ? "md:translate-y-5" : ""}`}>
-                                <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-500">
-                                    {post.postType ? <span className="rounded-full border border-white/10 px-2 py-1">{post.postType}</span> : null}
-                                    {post.publishedAt ? <span>{formatDate(post.publishedAt)}</span> : null}
+                            <article key={post._id} className={`overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.035] backdrop-blur-xl ${index % 2 ? "md:translate-y-5" : ""}`}>
+                                {post.coverImage && getMediaType(post.coverImage) === "image" ? (
+                                    <div className="h-52 overflow-hidden bg-white/[0.04]">
+                                        <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
+                                    </div>
+                                ) : null}
+                                <div className="p-5">
+                                    <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-500">
+                                        {post.postType ? <span className="rounded-full border border-white/10 px-2 py-1">{post.postType}</span> : null}
+                                        {post.publishedAt ? <span>{formatDate(post.publishedAt)}</span> : null}
+                                    </div>
+                                    <h3 className="mt-3 text-lg font-black">{post.title}</h3>
+                                    {post.excerpt ? <p className="mt-2 text-sm leading-6 text-slate-400">{post.excerpt}</p> : null}
+                                    {post.content ? <p className="mt-3 line-clamp-4 whitespace-pre-line text-xs leading-6 text-slate-500">{post.content}</p> : null}
+                                    {(post.githubUrl || post.demoUrl || post.externalUrl) ? (
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            {post.githubUrl ? <a href={post.githubUrl} target="_blank" rel="noreferrer" className="inline-flex rounded-full border border-white/10 px-3 py-2 text-[10px] font-semibold text-slate-300">GitHub ↗</a> : null}
+                                            {post.demoUrl ? <a href={post.demoUrl} target="_blank" rel="noreferrer" className="inline-flex rounded-full border border-white/10 px-3 py-2 text-[10px] font-semibold text-slate-300">Demo ↗</a> : null}
+                                            {post.externalUrl ? <a href={post.externalUrl} target="_blank" rel="noreferrer" className="inline-flex rounded-full border border-white/10 px-3 py-2 text-[10px] font-semibold text-slate-300">Open ↗</a> : null}
+                                        </div>
+                                    ) : null}
                                 </div>
-                                <h3 className="mt-3 text-lg font-black">{post.title}</h3>
-                                {post.excerpt ? <p className="mt-2 text-sm leading-6 text-slate-400">{post.excerpt}</p> : null}
-                                {post.content ? <p className="mt-3 line-clamp-4 whitespace-pre-line text-xs leading-6 text-slate-500">{post.content}</p> : null}
                             </article>
                         ))}
                     </div>
