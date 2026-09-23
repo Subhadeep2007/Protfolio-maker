@@ -3304,6 +3304,15 @@ const LivePortfolioPreview = ({
                                     {project.featured ? <span className="text-[9px] text-yellow-300">[featured]</span> : null}
                                 </div>
                                 {project.category ? <p className="mt-1 text-[9px] text-cyan-300">{project.category}</p> : null}
+                                {project.image ? (
+    <div className="mt-3 h-40 overflow-hidden border border-emerald-400/10 bg-black/20">
+        <img
+            src={project.image}
+            alt={project.title || "Project"}
+            className="h-full w-full object-cover"
+        />
+    </div>
+) : null}
                                 {project.description ? <p className="mt-3 text-xs leading-6 text-slate-500">{project.description}</p> : null}
                                 {toArray(project.technologies).length > 0 ? (
                                     <p className="mt-3 text-[9px] leading-5 text-slate-600">{toArray(project.technologies).join(" · ")}</p>
