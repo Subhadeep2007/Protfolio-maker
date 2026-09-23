@@ -2888,6 +2888,16 @@ const LivePortfolioPreview = ({
                                 Get in Touch
                             </a>
                         ) : null}
+                        {form.resume?.url ? (
+    <a
+        href={form.resume.url}
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-full border border-slate-300 px-5 py-2.5 text-xs font-semibold text-slate-700"
+    >
+        Download CV
+    </a>
+) : null}
                     </div>
 
                     {socialLinks.length > 0 ? (
@@ -3216,6 +3226,16 @@ const LivePortfolioPreview = ({
                         <div className="mt-6 flex flex-wrap gap-2">
                             {hasProjects ? <a href="#preview-projects" className="border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[10px] font-bold text-emerald-300">$ cd projects</a> : null}
                             {hasContact && (form.email || user?.email) ? <a href={`mailto:${form.email || user?.email || ""}`} className="border border-cyan-400/20 px-4 py-2 text-[10px] text-cyan-300">$ mail --contact</a> : null}
+                            {form.resume?.url ? (
+    <a
+        href={form.resume.url}
+        target="_blank"
+        rel="noreferrer"
+        className="border border-emerald-400/30 px-4 py-2 text-[10px] font-bold text-emerald-300"
+    >
+        $ download-cv
+    </a>
+) : null}
                         </div>
                     </div>
 
@@ -3496,6 +3516,16 @@ const LivePortfolioPreview = ({
                                 Let's Talk
                             </a>
                         ) : null}
+                        {form.resume?.url ? (
+    <a
+        href={form.resume.url}
+        target="_blank"
+        rel="noreferrer"
+        className="rounded-full border border-white/20 bg-white/[0.05] px-5 py-2.5 text-xs font-semibold text-white backdrop-blur"
+    >
+        Download CV
+    </a>
+) : null}
                     </div>
 
                     {socialLinks.length > 0 ? (
