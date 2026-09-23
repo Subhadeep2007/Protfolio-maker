@@ -2438,13 +2438,19 @@ const LivePortfolioPreview = ({
 
 
     const ContactGrid = ({
-        compact = false
+        compact = false,
+        variant = "default"
     }) => (
         <div
-            className={compact
-                ? "grid grid-cols-1 gap-3 sm:grid-cols-2"
-                : "grid grid-cols-1 gap-4 sm:grid-cols-2"
-            }
+            className={`${
+                compact
+                    ? "grid grid-cols-1 gap-3 sm:grid-cols-2"
+                    : "grid grid-cols-1 gap-4 sm:grid-cols-2"
+            } ${
+                variant === "modern"
+                    ? "text-white"
+                    : ""
+            }`}
         >
             {form.email ? (
                 <a
@@ -2512,20 +2518,24 @@ const LivePortfolioPreview = ({
         seoKeywords.length > 0) ? (
             <section
                 id="preview-seo"
-                className={
+                className={`${
                     variant === "minimal"
                         ? "border-t px-6 py-14 sm:px-12"
                         : variant === "developer"
                             ? "border-t border-emerald-400/10 px-6 py-10 sm:px-10"
                             : "border-t px-6 py-12 sm:px-12"
-                }
+                } ${
+                    variant === "modern"
+                        ? "text-white"
+                        : ""
+                }`}
             >
                 <SectionHeading
                     number="08"
                     title="SEO Preview"
                 />
 
-                <div className="rounded-2xl border p-5">
+                <div className="rounded-2xl border p-5 text-white">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.18em]">
                         Search result preview
                     </p>
@@ -2786,12 +2796,12 @@ const LivePortfolioPreview = ({
                 </section>
             ) : null}
 
-            <SEOBlock />
+            <SEOBlock variant="modern" />
 
             {hasContact ? (
-                <section id="preview-contact" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                <section id="preview-contact" className="border-b border-white/10 px-6 py-12 sm:px-12 text-white">
                     <SectionHeading number="09" title="Contact" />
-                    <ContactGrid />
+                    <ContactGrid variant="modern" />
                 </section>
             ) : null}
 
