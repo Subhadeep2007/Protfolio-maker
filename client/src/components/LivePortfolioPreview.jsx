@@ -2379,8 +2379,8 @@ const LivePortfolioPreview = ({
 
     // ========================================
     // SELECTED TEMPLATE
-    // Existing portfolio structure stays the same.
-    // Only the visual presentation changes here.
+    // Four genuinely different visual layouts.
+    // Data, sections and existing components stay intact.
     // ========================================
 
     const selectedTemplate =
@@ -2393,1489 +2393,1404 @@ const LivePortfolioPreview = ({
             ? form.template
             : "modern";
 
-    return (
-        <section
-            data-template={selectedTemplate}
-            className={`
-                min-w-0
-                rounded-3xl
-                border
-                border-white/10
-                bg-[#070b16]
-                p-3
-                shadow-2xl
-                sm:p-4
-                portfolio-template-${selectedTemplate}
-            `}
+
+    // ========================================
+    // SHARED SECTION HELPERS
+    // ========================================
+
+    const hasAbout =
+        form.showAboutSection &&
+        Boolean(form.bio);
+
+    const hasSkills =
+        form.showSkillsSection &&
+        sortedSkills.length > 0;
+
+    const hasProjects =
+        form.showProjectsSection &&
+        sortedProjects.length > 0;
+
+    const hasExperience =
+        form.showExperienceSection &&
+        sortedExperiences.length > 0;
+
+    const hasEducation =
+        form.showEducationSection &&
+        sortedEducation.length > 0;
+
+    const hasCertificates =
+        form.showCertificatesSection &&
+        sortedCertificates.length > 0;
+
+    const hasPosts =
+        form.showPostsSection &&
+        sortedPosts.length > 0;
+
+    const hasContact =
+        form.showContactSection &&
+        (
+            form.email ||
+            form.phone ||
+            form.location ||
+            form.website ||
+            socialLinks.length > 0
+        );
+
+
+    const ContactGrid = ({
+        compact = false
+    }) => (
+        <div
+            className={compact
+                ? "grid grid-cols-1 gap-3 sm:grid-cols-2"
+                : "grid grid-cols-1 gap-4 sm:grid-cols-2"
+            }
         >
-            <style>{`
-                /* ========================================
-                   TEMPLATE VISUAL SYSTEM
-                   Modern = existing UI unchanged
-                   Minimal = clean editorial layout
-                   Developer = terminal / code aesthetic
-                   Creative = bold glass / gradient aesthetic
-                ======================================== */
-
-                .portfolio-template-modern {
-                    --template-surface: #070b16;
-                    --template-inner: #020712;
-                }
-
-                .portfolio-template-minimal {
-                    background: #f8fafc !important;
-                    border-color: #e2e8f0 !important;
-                    color: #0f172a !important;
-                    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.08) !important;
-                }
-
-                .portfolio-template-minimal > div:last-of-type {
-                    background: #ffffff !important;
-                    border-color: #e2e8f0 !important;
-                    border-radius: 1rem !important;
-                }
-
-                .portfolio-template-minimal nav {
-                    background: #ffffff !important;
-                    border-color: #e2e8f0 !important;
-                }
-
-                .portfolio-template-minimal h1,
-                .portfolio-template-minimal h2,
-                .portfolio-template-minimal h3,
-                .portfolio-template-minimal p,
-                .portfolio-template-minimal span,
-                .portfolio-template-minimal li {
-                    color: #0f172a;
-                }
-
-                .portfolio-template-minimal .text-slate-300,
-                .portfolio-template-minimal .text-slate-400 {
-                    color: #475569 !important;
-                }
-
-                .portfolio-template-minimal .text-slate-500,
-                .portfolio-template-minimal .text-slate-600 {
-                    color: #64748b !important;
-                }
-
-                .portfolio-template-minimal article,
-                .portfolio-template-minimal nav a,
-                .portfolio-template-minimal section > div > a,
-                .portfolio-template-minimal section > div > div {
-                    border-color: #e2e8f0 !important;
-                    background: #ffffff !important;
-                }
-
-                .portfolio-template-minimal img {
-                    border-radius: 0.75rem;
-                }
-
-                .portfolio-template-developer {
-                    background: #050805 !important;
-                    border-color: rgba(74, 222, 128, 0.2) !important;
-                    box-shadow: 0 0 60px rgba(74, 222, 128, 0.05) !important;
-                }
-
-                .portfolio-template-developer > div:last-of-type {
-                    background: #020602 !important;
-                    border-color: rgba(74, 222, 128, 0.18) !important;
-                    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
-                }
-
-                .portfolio-template-developer nav {
-                    background: #030803 !important;
-                    border-color: rgba(74, 222, 128, 0.16) !important;
-                }
-
-                .portfolio-template-developer nav::before {
-                    content: "root@portfolio:~$";
-                    margin-right: 1rem;
-                    color: #4ade80;
-                    font-size: 10px;
-                    font-weight: 700;
-                    letter-spacing: 0.08em;
-                }
-
-                .portfolio-template-developer article {
-                    border-radius: 0.5rem !important;
-                    border-color: rgba(74, 222, 128, 0.14) !important;
-                    background: rgba(74, 222, 128, 0.025) !important;
-                }
-
-                .portfolio-template-developer section {
-                    background-image: linear-gradient(
-                        rgba(74, 222, 128, 0.025) 1px,
-                        transparent 1px
-                    ), linear-gradient(
-                        90deg,
-                        rgba(74, 222, 128, 0.025) 1px,
-                        transparent 1px
-                    );
-                    background-size: 24px 24px;
-                }
-
-                .portfolio-template-creative {
-                    background: linear-gradient(135deg, #090d1f, #120c24 48%, #071525) !important;
-                    border-color: rgba(168, 85, 247, 0.25) !important;
-                    box-shadow: 0 30px 80px rgba(124, 58, 237, 0.12) !important;
-                }
-
-                .portfolio-template-creative > div:last-of-type {
-                    background:
-                        radial-gradient(circle at 10% 10%, rgba(34, 211, 238, 0.08), transparent 26%),
-                        radial-gradient(circle at 90% 20%, rgba(168, 85, 247, 0.10), transparent 28%),
-                        #030615 !important;
-                    border-color: rgba(168, 85, 247, 0.18) !important;
-                }
-
-                .portfolio-template-creative nav {
-                    background: rgba(255, 255, 255, 0.025) !important;
-                    backdrop-filter: blur(16px);
-                    border-color: rgba(255, 255, 255, 0.08) !important;
-                }
-
-                .portfolio-template-creative article {
-                    border-radius: 1.5rem !important;
-                    background: rgba(255, 255, 255, 0.035) !important;
-                    box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18);
-                }
-
-                .portfolio-template-creative #preview-home h2 {
-                    font-size: clamp(2.75rem, 6vw, 5.5rem);
-                    line-height: 0.95;
-                    letter-spacing: -0.055em;
-                }
-
-                .portfolio-template-creative section > div {
-                    transition: transform 220ms ease, border-color 220ms ease;
-                }
-
-                .portfolio-template-creative article:hover {
-                    transform: translateY(-4px) rotate(-0.15deg);
-                }
-            `}</style>
-
-            {/* PREVIEW LABEL */}
-
-            <div
-                className="
-                    mb-3
-                    flex
-                    items-center
-                    justify-between
-                    px-2
-                "
-            >
-                <div>
-                    <p
-                        className="
-                            text-[10px]
-                            font-bold
-                            uppercase
-                            tracking-[0.22em]
-                            text-slate-500
-                        "
-                    >
-                        Live Preview
-                    </p>
-
-                    <p
-                        className="
-                            mt-1
-                            text-xs
-                            text-slate-600
-                        "
-                    >
-                        Real portfolio data
-                    </p>
-                </div>
-
-                <span
-                    className="
-                        inline-flex
-                        items-center
-                        gap-2
-                        text-xs
-                        text-emerald-300
-                    "
+            {form.email ? (
+                <a
+                    href={`mailto:${form.email}`}
+                    className="rounded-2xl border p-4 transition"
                 >
-                    <span
-                        className="
-                            h-1.5
-                            w-1.5
-                            rounded-full
-                            bg-emerald-400
-                        "
-                    />
+                    <p className="text-[9px] font-bold uppercase tracking-[0.18em]">
+                        Email
+                    </p>
+                    <p className="mt-2 break-all text-sm">
+                        {form.email}
+                    </p>
+                </a>
+            ) : null}
 
-                    Live
-                </span>
-            </div>
-
-            {dataError ? (
-                <div
-                    className="
-                        mb-3
-                        rounded-xl
-                        border
-                        border-red-400/20
-                        bg-red-400/5
-                        px-4
-                        py-3
-                        text-xs
-                        text-red-300
-                    "
+            {form.phone ? (
+                <a
+                    href={`tel:${form.phone}`}
+                    className="rounded-2xl border p-4 transition"
                 >
-                    {dataError}
+                    <p className="text-[9px] font-bold uppercase tracking-[0.18em]">
+                        Phone
+                    </p>
+                    <p className="mt-2 text-sm">
+                        {form.phone}
+                    </p>
+                </a>
+            ) : null}
+
+            {form.location ? (
+                <div className="rounded-2xl border p-4">
+                    <p className="text-[9px] font-bold uppercase tracking-[0.18em]">
+                        Location
+                    </p>
+                    <p className="mt-2 text-sm">
+                        {form.location}
+                    </p>
                 </div>
             ) : null}
 
-            <div
-                className="
-                    overflow-hidden
-                    rounded-2xl
-                    border
-                    border-white/10
-                    bg-[#020712]
-                "
-            >
-                {/* ========================================
-                    NAVBAR
-                ======================================== */}
-
-                <nav
-                    className="
-                        flex
-                        items-center
-                        justify-between
-                        border-b
-                        border-white/10
-                        px-5
-                        py-4
-                        sm:px-8
-                    "
+            {form.website ? (
+                <a
+                    href={form.website}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-2xl border p-4 transition"
                 >
-                    <div>
-                        <span
-                            className="
-                                text-sm
-                                font-black
-                                text-white
-                            "
-                        >
-                            {first}
-                        </span>
+                    <p className="text-[9px] font-bold uppercase tracking-[0.18em]">
+                        Website
+                    </p>
+                    <p className="mt-2 break-all text-sm">
+                        {form.website}
+                    </p>
+                </a>
+            ) : null}
+        </div>
+    );
 
+
+    const SEOBlock = ({
+        variant = "default"
+    }) => (
+        (seo.metaTitle ||
+        seo.metaDescription ||
+        seoKeywords.length > 0) ? (
+            <section
+                id="preview-seo"
+                className={
+                    variant === "minimal"
+                        ? "border-t px-6 py-14 sm:px-12"
+                        : variant === "developer"
+                            ? "border-t border-emerald-400/10 px-6 py-10 sm:px-10"
+                            : "border-t px-6 py-12 sm:px-12"
+                }
+            >
+                <SectionHeading
+                    number="08"
+                    title="SEO Preview"
+                />
+
+                <div className="rounded-2xl border p-5">
+                    <p className="text-[10px] font-semibold uppercase tracking-[0.18em]">
+                        Search result preview
+                    </p>
+
+                    <p
+                        className="mt-4 text-xl font-semibold"
+                        style={{
+                            color: primary
+                        }}
+                    >
+                        {seo.metaTitle ||
+                            form.title ||
+                            form.username ||
+                            "Portfolio"}
+                    </p>
+
+                    {seo.metaDescription ? (
+                        <p className="mt-2 max-w-3xl text-sm leading-6">
+                            {seo.metaDescription}
+                        </p>
+                    ) : null}
+
+                    {seoKeywords.length > 0 ? (
+                        <div className="mt-4 flex flex-wrap gap-2">
+                            {seoKeywords.map(
+                                (keyword, index) => (
+                                    <span
+                                        key={`${keyword}-${index}`}
+                                        className="rounded-full border px-2.5 py-1 text-xs"
+                                    >
+                                        {keyword}
+                                    </span>
+                                )
+                            )}
+                        </div>
+                    ) : null}
+                </div>
+            </section>
+        ) : null
+    );
+
+
+    // ========================================
+    // MODERN TEMPLATE
+    // ========================================
+
+    const ModernTemplate = () => (
+        <div className="template-modern overflow-hidden rounded-2xl border border-white/10 bg-[#020712]">
+
+            <nav className="border-b border-white/10 px-5 py-4 sm:px-8">
+                <div className="flex items-center justify-between gap-4">
+                    <div className="text-sm font-black">
+                        <span className="text-white">{first}</span>
                         {rest ? (
-                            <span
-                                className="
-                                    text-sm
-                                    font-black
-                                "
-                                style={{
-                                    color: primary
-                                }}
-                            >
-                                {" "}
-                                {rest}
+                            <span style={{ color: primary }}>
+                                {" "}{rest}
                             </span>
                         ) : null}
                     </div>
 
-                    <div
-                        className="
-                            hidden
-                            items-center
-                            gap-6
-                            text-xs
-                            text-slate-500
-                            md:flex
-                        "
-                    >
-                        <a
-                            href="#preview-home"
-                            className="hover:text-white"
-                        >
-                            Home
-                        </a>
-
-                        {form.showAboutSection ? (
-                            <a
-                                href="#preview-about"
-                                className="hover:text-white"
-                            >
-                                About
-                            </a>
-                        ) : null}
-
-                        {form.showSkillsSection &&
-                        sortedSkills.length >
-                            0 ? (
-                            <a
-                                href="#preview-skills"
-                                className="hover:text-white"
-                            >
-                                Skills
-                            </a>
-                        ) : null}
-
-                        {form.showProjectsSection &&
-                        sortedProjects.length >
-                            0 ? (
-                            <a
-                                href="#preview-projects"
-                                className="hover:text-white"
-                            >
-                                Projects
-                            </a>
-                        ) : null}
-
-                        {form.showExperienceSection &&
-                        sortedExperiences.length >
-                            0 ? (
-                            <a
-                                href="#preview-experience"
-                                className="hover:text-white"
-                            >
-                                Experience
-                            </a>
-                        ) : null}
-
-                        {form.showEducationSection &&
-                        sortedEducation.length >
-                            0 ? (
-                            <a
-                                href="#preview-education"
-                                className="hover:text-white"
-                            >
-                                Education
-                            </a>
-                        ) : null}
-
-                        {form.showCertificatesSection &&
-                        sortedCertificates.length >
-                            0 ? (
-                            <a
-                                href="#preview-certificates"
-                                className="hover:text-white"
-                            >
-                                Certificates
-                            </a>
-                        ) : null}
-
-                        {form.showPostsSection &&
-                        sortedPosts.length >
-                            0 ? (
-                            <a
-                                href="#preview-posts"
-                                className="hover:text-white"
-                            >
-                                Posts
-                            </a>
-                        ) : null}
-
-                        {form.showContactSection ? (
-                            <a
-                                href="#preview-contact"
-                                className="hover:text-white"
-                            >
-                                Contact
-                            </a>
-                        ) : null}
+                    <div className="hidden items-center gap-5 text-xs text-slate-500 md:flex">
+                        <a href="#preview-home" className="hover:text-white">Home</a>
+                        {hasAbout ? <a href="#preview-about" className="hover:text-white">About</a> : null}
+                        {hasSkills ? <a href="#preview-skills" className="hover:text-white">Skills</a> : null}
+                        {hasProjects ? <a href="#preview-projects" className="hover:text-white">Projects</a> : null}
+                        {hasExperience ? <a href="#preview-experience" className="hover:text-white">Experience</a> : null}
+                        {hasCertificates ? <a href="#preview-certificates" className="hover:text-white">Certificates</a> : null}
+                        {hasContact ? <a href="#preview-contact" className="hover:text-white">Contact</a> : null}
                     </div>
 
-                    {form.showContactSection &&
-                    (form.email ||
-                        user?.email) ? (
+                    {hasContact && (form.email || user?.email) ? (
                         <a
-                            href={`mailto:${
-                                form.email ||
-                                user?.email ||
-                                ""
-                            }`}
-                            className="
-                                rounded-lg
-                                px-3
-                                py-2
-                                text-[10px]
-                                font-bold
-                                text-slate-950
-                            "
-                            style={{
-                                backgroundColor:
-                                    primary
-                            }}
+                            href={`mailto:${form.email || user?.email || ""}`}
+                            className="rounded-lg px-3 py-2 text-[10px] font-bold text-slate-950"
+                            style={{ backgroundColor: primary }}
                         >
-                            Let's Connect
+                            Connect
                         </a>
                     ) : null}
-                </nav>
-
-                {/* ========================================
-                    HERO
-                ======================================== */}
-
-                <section
-                    id="preview-home"
-                    className="
-                        grid
-                        gap-10
-                        px-6
-                        py-14
-                        sm:px-12
-                        sm:py-20
-                        lg:grid-cols-2
-                        lg:items-center
-                    "
-                >
-                    {/* TEXT */}
-
-                    <div
-                        className="
-                            order-2
-                            lg:order-1
-                        "
-                    >
-                        <p
-                            className="
-                                text-sm
-                                font-medium
-                            "
-                            style={{
-                                color: primary
-                            }}
-                        >
-                            Hello, I'm
-                        </p>
-
-                        <h2
-                            className={`
-        mt-3
-        text-4xl
-        font-black
-        tracking-tight
-        sm:text-5xl
-        text-white
-        ${isPublic ? "animate-pulse" : ""}
-    `}
-                        >
-                            {name}
-                        </h2>
-
-                        {form.headline ? (
-                            <p
-                                className="
-                                    mt-4
-                                    text-lg
-                                    font-semibold
-                                    text-slate-300
-                                "
-                            >
-                                {
-                                    form.headline
-                                }
-                            </p>
-                        ) : null}
-
-                        {form.bio ? (
-                            <p
-                                className="
-                                    mt-5
-                                    max-w-xl
-                                    whitespace-pre-line
-                                    text-sm
-                                    leading-7
-                                    text-slate-400
-                                "
-                            >
-                                {
-                                    form.bio
-                                }
-                            </p>
-                        ) : null}
-
-                        {form.location ? (
-                            <p
-                                className="
-                                    mt-4
-                                    text-xs
-                                    text-slate-500
-                                "
-                            >
-                                📍{" "}
-                                {
-                                    form.location
-                                }
-                            </p>
-                        ) : null}
-
-                        {socialLinks.length >
-                        0 ? (
-                            <div
-                                className="
-                                    mt-6
-                                    flex
-                                    flex-wrap
-                                    gap-2
-                                "
-                            >
-                                {socialLinks.map(
-                                    (
-                                        item
-                                    ) => (
-                                        <SocialIcon
-                                            key={
-                                                item.label
-                                            }
-                                            label={
-                                                item.label
-                                            }
-                                            href={
-                                                item.href
-                                            }
-                                        />
-                                    )
-                                )}
-                            </div>
-                        ) : null}
-
-                        <div
-                            className="
-                                mt-7
-                                flex
-                                flex-wrap
-                                gap-3
-                            "
-                        >
-                            {form.showContactSection &&
-                            (form.email ||
-                                user?.email) ? (
-                                <a
-                                    href={`mailto:${
-                                        form.email ||
-                                        user?.email ||
-                                        ""
-                                    }`}
-                                    className="
-                                        rounded-lg
-                                        px-5
-                                        py-2.5
-                                        text-xs
-                                        font-bold
-                                        text-slate-950
-                                    "
-                                    style={{
-                                        backgroundColor:
-                                            primary
-                                    }}
-                                >
-                                    Let's Connect
-                                    →
-                                </a>
-                            ) : null}
-
-                            {form.resume?.url ? (
-                                <a
-                                    href={
-                                        form.resume.url
-                                    }
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="
-                                        rounded-lg
-                                        border
-                                        px-5
-                                        py-2.5
-                                        text-xs
-                                        font-medium
-                                        text-cyan-300
-                                    "
-                                    style={{
-                                        borderColor:
-                                            `${primary}55`
-                                    }}
-                                >
-                                    Download CV
-                                </a>
-                            ) : null}
-                        </div>
-
-                        {/* PROFILE CONTACT DETAILS */}
-
-                        {form.email ||
-                        form.phone ||
-                        form.website ? (
-                            <div
-                                className="
-                                    mt-6
-                                    grid
-                                    grid-cols-1
-                                    gap-2
-                                    sm:grid-cols-2
-                                "
-                            >
-                                {form.email ? (
-                                    <a
-                                        href={`mailto:${form.email}`}
-                                        className="
-                                            rounded-xl
-                                            border
-                                            border-white/10
-                                            bg-white/[0.03]
-                                            px-4
-                                            py-3
-                                            text-xs
-                                            text-slate-300
-                                            transition
-                                            hover:bg-white/[0.06]
-                                        "
-                                    >
-                                        <span
-                                            className="
-                                                block
-                                                text-[10px]
-                                                font-bold
-                                                uppercase
-                                                tracking-[0.15em]
-                                                text-slate-600
-                                            "
-                                        >
-                                            Email
-                                        </span>
-
-                                        <span
-                                            className="
-                                                mt-1
-                                                block
-                                                break-all
-                                            "
-                                        >
-                                            {form.email}
-                                        </span>
-                                    </a>
-                                ) : null}
-
-                                {form.phone ? (
-                                    <a
-                                        href={`tel:${form.phone}`}
-                                        className="
-                                            rounded-xl
-                                            border
-                                            border-white/10
-                                            bg-white/[0.03]
-                                            px-4
-                                            py-3
-                                            text-xs
-                                            text-slate-300
-                                            transition
-                                            hover:bg-white/[0.06]
-                                        "
-                                    >
-                                        <span
-                                            className="
-                                                block
-                                                text-[10px]
-                                                font-bold
-                                                uppercase
-                                                tracking-[0.15em]
-                                                text-slate-600
-                                            "
-                                        >
-                                            Phone
-                                        </span>
-
-                                        <span
-                                            className="
-                                                mt-1
-                                                block
-                                            "
-                                        >
-                                            {form.phone}
-                                        </span>
-                                    </a>
-                                ) : null}
-
-                                {form.website ? (
-                                    <a
-                                        href={form.website}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="
-                                            rounded-xl
-                                            border
-                                            border-white/10
-                                            bg-white/[0.03]
-                                            px-4
-                                            py-3
-                                            text-xs
-                                            text-slate-300
-                                            transition
-                                            hover:bg-white/[0.06]
-                                            sm:col-span-2
-                                        "
-                                    >
-                                        <span
-                                            className="
-                                                block
-                                                text-[10px]
-                                                font-bold
-                                                uppercase
-                                                tracking-[0.15em]
-                                                text-slate-600
-                                            "
-                                        >
-                                            Website
-                                        </span>
-
-                                        <span
-                                            className="
-                                                mt-1
-                                                block
-                                                break-all
-                                            "
-                                        >
-                                            {form.website}
-                                        </span>
-                                    </a>
-                                ) : null}
-                            </div>
-                        ) : null}
-                    </div>
-
-                    {/* PROFILE IMAGE */}
-
-                    <div
-                        className="
-                            order-1
-                            flex
-                            justify-center
-                            lg:order-2
-                        "
-                    >
-                        <div
-                            className="
-                                relative
-                                flex
-                                h-56
-                                w-56
-                                items-center
-                                justify-center
-                                rounded-full
-                                border
-                                sm:h-72
-                                sm:w-72
-                            "
-                            style={{
-                                borderColor:
-                                    `${primary}55`,
-                                boxShadow:
-                                    `0 0 100px ${primary}22`
-                            }}
-                        >
-                            <div
-                                className="
-                                    absolute
-                                    inset-5
-                                    rounded-full
-                                    border
-                                "
-                                style={{
-                                    borderColor:
-                                        `${secondary}44`
-                                }}
-                            />
-
-                            <div
-                                className="
-                                    absolute
-                                    inset-2
-                                    rounded-full
-                                    border
-                                    border-dashed
-                                    border-white/10
-                                "
-                            />
-
-                            <div
-                                className="
-                                    flex
-                                    h-44
-                                    w-44
-                                    items-center
-                                    justify-center
-                                    overflow-hidden
-                                    rounded-full
-                                    bg-[#0b1222]
-                                    text-5xl
-                                    font-black
-                                    text-cyan-300
-                                    sm:h-56
-                                    sm:w-56
-                                "
-                            >
-                                {form.profileImage ? (
-                                    <img
-                                        src={
-                                            form.profileImage
-                                        }
-                                        alt={
-                                            name
-                                        }
-                                        className="
-                                            h-full
-                                            w-full
-                                            object-cover
-                                        "
-                                    />
-                                ) : (
-                                    name
-                                        .charAt(
-                                            0
-                                        )
-                                        .toUpperCase()
-                                )}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* ========================================
-                    REAL METRICS
-                ======================================== */}
-
-                <div
-                    className="
-                        grid
-                        grid-cols-2
-                        border-y
-                        border-white/10
-                        sm:grid-cols-4
-                    "
-                >
-                    <Metric
-                        value={
-                            sortedProjects.length
-                        }
-                        label="Projects"
-                    />
-
-                    <Metric
-                        value={
-                            sortedExperiences.length
-                        }
-                        label="Experience"
-                    />
-
-                    <Metric
-                        value={
-                            technologiesCount
-                        }
-                        label="Technologies"
-                    />
-
-                    <Metric
-                        value={
-                            sortedCertificates.length
-                        }
-                        label="Certificates"
-                    />
                 </div>
+            </nav>
 
-                {/* ========================================
-                    ABOUT
-                ======================================== */}
 
-                {form.showAboutSection &&
-                form.bio ? (
-                    <section
-                        id="preview-about"
-                        className="
-                            border-b
-                            border-white/10
-                            px-6
-                            py-12
-                            sm:px-12
-                        "
-                    >
-                        <SectionHeading
-                            number="01"
-                            title="About Me"
-                        />
+            <section
+                id="preview-home"
+                className="grid gap-10 px-6 py-14 sm:px-12 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center"
+            >
+                <div>
+                    <p className="text-sm font-medium" style={{ color: primary }}>
+                        Hello, I'm
+                    </p>
 
-                        <p
-                            className="
-                                max-w-4xl
-                                whitespace-pre-line
-                                text-sm
-                                leading-8
-                                text-slate-400
-                            "
-                        >
+                    <h2 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-6xl">
+                        {name}
+                    </h2>
+
+                    {form.headline ? (
+                        <p className="mt-4 text-xl font-semibold text-slate-300">
+                            {form.headline}
+                        </p>
+                    ) : null}
+
+                    {form.bio ? (
+                        <p className="mt-5 max-w-xl whitespace-pre-line text-sm leading-7 text-slate-400">
                             {form.bio}
                         </p>
-                    </section>
-                ) : null}
+                    ) : null}
 
-                {/* ========================================
-                    SKILLS
-                ======================================== */}
+                    {form.location ? (
+                        <p className="mt-4 text-xs text-slate-500">
+                            📍 {form.location}
+                        </p>
+                    ) : null}
 
-                {form.showSkillsSection &&
-                sortedSkills.length >
-                    0 ? (
-                    <section
-                        id="preview-skills"
-                        className="
-                            border-b
-                            border-white/10
-                            px-6
-                            py-12
-                            sm:px-12
-                        "
-                    >
-                        <SectionHeading
-                            number="02"
-                            title="Tech Stack"
-                        />
-
-                        <div
-                            className="
-                                grid
-                                grid-cols-1
-                                gap-4
-                                md:grid-cols-2
-                            "
-                        >
-                            {sortedSkills.map(
-                                (skill) => (
-                                    <SkillCard
-                                        key={
-                                            skill._id
-                                        }
-                                        skill={
-                                            skill
-                                        }
-                                        primary={
-                                            primary
-                                        }
-                                    />
-                                )
-                            )}
+                    {socialLinks.length > 0 ? (
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {socialLinks.map((item) => (
+                                <SocialIcon
+                                    key={item.label}
+                                    label={item.label}
+                                    href={item.href}
+                                />
+                            ))}
                         </div>
-                    </section>
-                ) : null}
+                    ) : null}
 
-                {/* ========================================
-                    PROJECTS
-                ======================================== */}
+                    <div className="mt-7 flex flex-wrap gap-3">
+                        {hasContact && (form.email || user?.email) ? (
+                            <a
+                                href={`mailto:${form.email || user?.email || ""}`}
+                                className="rounded-lg px-5 py-2.5 text-xs font-bold text-slate-950"
+                                style={{ backgroundColor: primary }}
+                            >
+                                Let's Connect →
+                            </a>
+                        ) : null}
 
-                {form.showProjectsSection &&
-                sortedProjects.length >
-                    0 ? (
-                    <section
-                        id="preview-projects"
-                        className="
-                            border-b
-                            border-white/10
-                            px-6
-                            py-12
-                            sm:px-12
-                        "
-                    >
-                        <SectionHeading
-                            number="03"
-                            title="My Projects"
-                        />
-
-                        <div
-                            className="
-                                grid
-                                grid-cols-1
-                                gap-5
-                                xl:grid-cols-2
-                            "
-                        >
-                            {sortedProjects.map(
-                                (project) => (
-                                    <ProjectCard
-                                        key={
-                                            project._id
-                                        }
-                                        project={
-                                            project
-                                        }
-                                        primary={
-                                            primary
-                                        }
-                                    />
-                                )
-                            )}
-                        </div>
-                    </section>
-                ) : null}
-
-                {/* ========================================
-                    EXPERIENCE
-                ======================================== */}
-
-                {form.showExperienceSection &&
-                sortedExperiences.length >
-                    0 ? (
-                    <section
-                        id="preview-experience"
-                        className="
-                            border-b
-                            border-white/10
-                            px-6
-                            py-12
-                            sm:px-12
-                        "
-                    >
-                        <SectionHeading
-                            number="04"
-                            title="Experience"
-                        />
-
-                        <div className="space-y-4">
-                            {sortedExperiences.map(
-                                (experience) => (
-                                    <ExperienceCard
-                                        key={
-                                            experience._id
-                                        }
-                                        experience={
-                                            experience
-                                        }
-                                        primary={
-                                            primary
-                                        }
-                                    />
-                                )
-                            )}
-                        </div>
-                    </section>
-                ) : null}
-
-                {/* ========================================
-                    EDUCATION
-                ======================================== */}
-
-                {form.showEducationSection &&
-                sortedEducation.length >
-                    0 ? (
-                    <section
-                        id="preview-education"
-                        className="
-                            border-b
-                            border-white/10
-                            px-6
-                            py-12
-                            sm:px-12
-                        "
-                    >
-                        <SectionHeading
-                            number="05"
-                            title="Education"
-                        />
-
-                        <div className="space-y-4">
-                            {sortedEducation.map(
-                                (item) => (
-                                    <EducationCard
-                                        key={
-                                            item._id
-                                        }
-                                        education={
-                                            item
-                                        }
-                                        primary={
-                                            primary
-                                        }
-                                    />
-                                )
-                            )}
-                        </div>
-                    </section>
-                ) : null}
-
-                {/* ========================================
-                    CERTIFICATES
-                ======================================== */}
-
-                {form.showCertificatesSection &&
-                sortedCertificates.length >
-                    0 ? (
-                    <section
-                        id="preview-certificates"
-                        className="
-                            border-b
-                            border-white/10
-                            px-6
-                            py-12
-                            sm:px-12
-                        "
-                    >
-                        <SectionHeading
-                            number="06"
-                            title="Certificates"
-                        />
-
-                        <div
-                            className="
-                                grid
-                                grid-cols-1
-                                gap-5
-                                md:grid-cols-2
-                            "
-                        >
-                            {sortedCertificates.map(
-                                (
-                                    certificate
-                                ) => (
-                                    <CertificateCard
-                                        key={
-                                            certificate._id
-                                        }
-                                        certificate={
-                                            certificate
-                                        }
-                                        primary={
-                                            primary
-                                        }
-                                    />
-                                )
-                            )}
-                        </div>
-                    </section>
-                ) : null}
-
-                {/* ========================================
-                    POSTS
-                ======================================== */}
-
-                {form.showPostsSection &&
-                sortedPosts.length >
-                    0 ? (
-                    <section
-                        id="preview-posts"
-                        className="
-                            border-b
-                            border-white/10
-                            px-6
-                            py-12
-                            sm:px-12
-                        "
-                    >
-                        <SectionHeading
-                            number="07"
-                            title="Latest Posts"
-                        />
-
-                        <div
-                            className="
-                                grid
-                                grid-cols-1
-                                gap-5
-                                xl:grid-cols-2
-                            "
-                        >
-                            {sortedPosts.map(
-                                (post) => (
-                                    <PostCard
-                                        key={
-                                            post._id
-                                        }
-                                        post={
-                                            post
-                                        }
-                                        primary={
-                                            primary
-                                        }
-                                    />
-                                )
-                            )}
-                        </div>
-                    </section>
-                ) : null}
-
-                {/* ========================================
-                    SEO PREVIEW
-                ======================================== */}
-
-                {(seo.metaTitle ||
-                seo.metaDescription ||
-                seoKeywords.length > 0) ? (
-                    <section
-                        id="preview-seo"
-                        className="border-b border-white/10 px-6 py-12 sm:px-12"
-                    >
-                        <SectionHeading
-                            number="08"
-                            title="SEO Preview"
-                        />
-
-                        <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
-                            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-                                Search result preview
-                            </p>
-
-                            <p
-                                className="mt-4 text-xl font-semibold"
+                        {form.resume?.url ? (
+                            <a
+                                href={form.resume.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="rounded-lg border px-5 py-2.5 text-xs font-medium"
                                 style={{
+                                    borderColor: `${primary}55`,
                                     color: primary
                                 }}
                             >
-                                {seo.metaTitle ||
-                                    form.title ||
-                                    form.username ||
-                                    "Portfolio"}
-                            </p>
+                                Download CV
+                            </a>
+                        ) : null}
+                    </div>
+                </div>
 
-                            {seo.metaDescription ? (
-                                <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-400">
-                                    {seo.metaDescription}
-                                </p>
-                            ) : null}
-
-                            {seoKeywords.length > 0 ? (
-                                <div className="mt-4 flex flex-wrap gap-2">
-                                    {seoKeywords.map(
-                                        (keyword, index) => (
-                                            <span
-                                                key={`${keyword}-${index}`}
-                                                className="rounded-full border border-cyan-400/10 bg-cyan-400/[0.03] px-2.5 py-1 text-xs text-cyan-300"
-                                            >
-                                                {keyword}
-                                            </span>
-                                        )
-                                    )}
-                                </div>
-                            ) : null}
-                        </div>
-                    </section>
-                ) : null}
-
-                {/* ========================================
-                    CONTACT
-                ======================================== */}
-
-                {form.showContactSection &&
-                (form.email ||
-                    form.phone ||
-                    form.location ||
-                    form.website ||
-                    socialLinks.length >
-                        0) ? (
-                    <section
-                        id="preview-contact"
-                        className="
-                            border-b
-                            border-white/10
-                            px-6
-                            py-12
-                            sm:px-12
-                        "
+                <div className="flex justify-center">
+                    <div
+                        className="relative flex h-56 w-56 items-center justify-center rounded-full border sm:h-72 sm:w-72"
+                        style={{
+                            borderColor: `${primary}55`,
+                            boxShadow: `0 0 100px ${primary}22`
+                        }}
                     >
-                        <SectionHeading
-                            number="09"
-                            title="Contact"
-                        />
+                        <div className="absolute inset-5 rounded-full border" style={{ borderColor: `${secondary}44` }} />
+                        <div className="absolute inset-2 rounded-full border border-dashed border-white/10" />
 
-                        <div
-                            className="
-                                grid
-                                grid-cols-1
-                                gap-4
-                                sm:grid-cols-2
-                            "
-                        >
-                            {form.email ? (
+                        <div className="flex h-44 w-44 items-center justify-center overflow-hidden rounded-full bg-[#0b1222] text-5xl font-black text-cyan-300 sm:h-56 sm:w-56">
+                            {form.profileImage ? (
+                                <img src={form.profileImage} alt={name} className="h-full w-full object-cover" />
+                            ) : (
+                                name.charAt(0).toUpperCase()
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <div className="grid grid-cols-2 border-y border-white/10 sm:grid-cols-4">
+                <Metric value={sortedProjects.length} label="Projects" />
+                <Metric value={sortedExperiences.length} label="Experience" />
+                <Metric value={technologiesCount} label="Technologies" />
+                <Metric value={sortedCertificates.length} label="Certificates" />
+            </div>
+
+
+            {hasAbout ? (
+                <section id="preview-about" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                    <SectionHeading number="01" title="About Me" />
+                    <p className="max-w-4xl whitespace-pre-line text-sm leading-8 text-slate-400">
+                        {form.bio}
+                    </p>
+                </section>
+            ) : null}
+
+            {hasSkills ? (
+                <section id="preview-skills" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                    <SectionHeading number="02" title="Tech Stack" />
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {sortedSkills.map((skill) => (
+                            <SkillCard key={skill._id} skill={skill} primary={primary} />
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+            {hasProjects ? (
+                <section id="preview-projects" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                    <SectionHeading number="03" title="My Projects" />
+                    <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+                        {sortedProjects.map((project) => (
+                            <ProjectCard key={project._id} project={project} primary={primary} />
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+            {hasExperience ? (
+                <section id="preview-experience" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                    <SectionHeading number="04" title="Experience" />
+                    <div className="space-y-4">
+                        {sortedExperiences.map((experience) => (
+                            <ExperienceCard key={experience._id} experience={experience} primary={primary} />
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+            {hasEducation ? (
+                <section id="preview-education" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                    <SectionHeading number="05" title="Education" />
+                    <div className="space-y-4">
+                        {sortedEducation.map((item) => (
+                            <EducationCard key={item._id} education={item} primary={primary} />
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+            {hasCertificates ? (
+                <section id="preview-certificates" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                    <SectionHeading number="06" title="Certificates" />
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                        {sortedCertificates.map((certificate) => (
+                            <CertificateCard key={certificate._id} certificate={certificate} primary={primary} />
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+            {hasPosts ? (
+                <section id="preview-posts" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                    <SectionHeading number="07" title="Latest Posts" />
+                    <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
+                        {sortedPosts.map((post) => (
+                            <PostCard key={post._id} post={post} primary={primary} />
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+            <SEOBlock />
+
+            {hasContact ? (
+                <section id="preview-contact" className="border-b border-white/10 px-6 py-12 sm:px-12">
+                    <SectionHeading number="09" title="Contact" />
+                    <ContactGrid />
+                </section>
+            ) : null}
+
+            <footer className="px-6 py-8 text-center text-xs text-slate-600 sm:px-12">
+                {form.title || user?.name || "Portfolio"}
+            </footer>
+        </div>
+    );
+
+
+    // ========================================
+    // MINIMAL TEMPLATE
+    // ========================================
+
+    const MinimalTemplate = () => (
+        <div className="template-minimal overflow-hidden rounded-none border border-slate-200 bg-white text-slate-900">
+
+            <nav className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-200 bg-white px-6 py-5 sm:px-10">
+                <div className="text-base font-black tracking-tight">
+                    {name}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-4 text-[11px] font-medium text-slate-500">
+                    <a href="#preview-home" className="hover:text-slate-900">Home</a>
+                    {hasAbout ? <a href="#preview-about" className="hover:text-slate-900">About</a> : null}
+                    {hasProjects ? <a href="#preview-projects" className="hover:text-slate-900">Work</a> : null}
+                    {hasExperience ? <a href="#preview-experience" className="hover:text-slate-900">Experience</a> : null}
+                    {hasCertificates ? <a href="#preview-certificates" className="hover:text-slate-900">Certificates</a> : null}
+                    {hasContact ? <a href="#preview-contact" className="hover:text-slate-900">Contact</a> : null}
+                </div>
+            </nav>
+
+
+            <section id="preview-home" className="px-6 py-16 sm:px-12 sm:py-24">
+                <div className="mx-auto max-w-5xl">
+                    <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
+                        Portfolio · {form.location || "Independent Developer"}
+                    </p>
+
+                    <h2 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-slate-950 sm:text-7xl">
+                        {name}
+                    </h2>
+
+                    {form.headline ? (
+                        <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
+                            {form.headline}
+                        </p>
+                    ) : null}
+
+                    {form.bio ? (
+                        <p className="mt-5 max-w-3xl whitespace-pre-line text-sm leading-7 text-slate-500">
+                            {form.bio}
+                        </p>
+                    ) : null}
+
+                    <div className="mt-8 flex flex-wrap gap-3">
+                        {hasProjects ? (
+                            <a href="#preview-projects" className="rounded-full bg-slate-950 px-5 py-2.5 text-xs font-semibold text-white">
+                                View Work →
+                            </a>
+                        ) : null}
+
+                        {hasContact && (form.email || user?.email) ? (
+                            <a
+                                href={`mailto:${form.email || user?.email || ""}`}
+                                className="rounded-full border border-slate-300 px-5 py-2.5 text-xs font-semibold text-slate-700"
+                            >
+                                Get in Touch
+                            </a>
+                        ) : null}
+                    </div>
+
+                    {socialLinks.length > 0 ? (
+                        <div className="mt-7 flex flex-wrap gap-2">
+                            {socialLinks.map((item) => (
                                 <a
-                                    href={`mailto:${form.email}`}
-                                    className="
-                                        rounded-2xl
-                                        border
-                                        border-white/10
-                                        bg-white/[0.02]
-                                        p-5
-                                        transition
-                                        hover:bg-white/[0.05]
-                                    "
-                                >
-                                    <p
-                                        className="
-                                            text-[10px]
-                                            font-bold
-                                            uppercase
-                                            tracking-[0.18em]
-                                            text-slate-600
-                                        "
-                                    >
-                                        Email
-                                    </p>
-
-                                    <p
-                                        className="
-                                            mt-2
-                                            break-all
-                                            text-sm
-                                            text-slate-300
-                                        "
-                                    >
-                                        {
-                                            form.email
-                                        }
-                                    </p>
-                                </a>
-                            ) : null}
-
-                            {form.phone ? (
-                                <a
-                                    href={`tel:${form.phone}`}
-                                    className="
-                                        rounded-2xl
-                                        border
-                                        border-white/10
-                                        bg-white/[0.02]
-                                        p-5
-                                        transition
-                                        hover:bg-white/[0.05]
-                                    "
-                                >
-                                    <p
-                                        className="
-                                            text-[10px]
-                                            font-bold
-                                            uppercase
-                                            tracking-[0.18em]
-                                            text-slate-600
-                                        "
-                                    >
-                                        Phone
-                                    </p>
-
-                                    <p
-                                        className="
-                                            mt-2
-                                            text-sm
-                                            text-slate-300
-                                        "
-                                    >
-                                        {
-                                            form.phone
-                                        }
-                                    </p>
-                                </a>
-                            ) : null}
-
-                            {form.location ? (
-                                <div
-                                    className="
-                                        rounded-2xl
-                                        border
-                                        border-white/10
-                                        bg-white/[0.02]
-                                        p-5
-                                    "
-                                >
-                                    <p
-                                        className="
-                                            text-[10px]
-                                            font-bold
-                                            uppercase
-                                            tracking-[0.18em]
-                                            text-slate-600
-                                        "
-                                    >
-                                        Location
-                                    </p>
-
-                                    <p
-                                        className="
-                                            mt-2
-                                            text-sm
-                                            text-slate-300
-                                        "
-                                    >
-                                        {
-                                            form.location
-                                        }
-                                    </p>
-                                </div>
-                            ) : null}
-
-                            {form.website ? (
-                                <a
-                                    href={
-                                        form.website
-                                    }
+                                    key={item.label}
+                                    href={item.href}
                                     target="_blank"
                                     rel="noreferrer"
-                                    className="
-                                        rounded-2xl
-                                        border
-                                        border-white/10
-                                        bg-white/[0.02]
-                                        p-5
-                                        transition
-                                        hover:bg-white/[0.05]
-                                    "
+                                    className="rounded-full border border-slate-200 px-3 py-1.5 text-[10px] font-bold text-slate-500 hover:text-slate-900"
                                 >
-                                    <p
-                                        className="
-                                            text-[10px]
-                                            font-bold
-                                            uppercase
-                                            tracking-[0.18em]
-                                            text-slate-600
-                                        "
-                                    >
-                                        Website
-                                    </p>
-
-                                    <p
-                                        className="
-                                            mt-2
-                                            break-all
-                                            text-sm
-                                            text-slate-300
-                                        "
-                                    >
-                                        {
-                                            form.website
-                                        }
-                                    </p>
+                                    {item.label}
                                 </a>
+                            ))}
+                        </div>
+                    ) : null}
+                </div>
+            </section>
+
+
+            <div className="grid grid-cols-2 border-y border-slate-200 sm:grid-cols-4">
+                {[
+                    [sortedProjects.length, "Projects"],
+                    [sortedExperiences.length, "Experience"],
+                    [technologiesCount, "Technologies"],
+                    [sortedCertificates.length, "Certificates"]
+                ].map(([value, label]) => (
+                    <div key={label} className="border-r border-slate-200 px-4 py-6 text-center last:border-r-0">
+                        <p className="text-xl font-bold text-slate-950">{value}</p>
+                        <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-slate-400">{label}</p>
+                    </div>
+                ))}
+            </div>
+
+
+            {hasAbout ? (
+                <section id="preview-about" className="border-b border-slate-200 px-6 py-14 sm:px-12">
+                    <div className="grid gap-8 md:grid-cols-[0.35fr_1fr]">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">01 · About</p>
+                        </div>
+                        <p className="max-w-3xl whitespace-pre-line text-base leading-8 text-slate-600">
+                            {form.bio}
+                        </p>
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasSkills ? (
+                <section id="preview-skills" className="border-b border-slate-200 px-6 py-14 sm:px-12">
+                    <div className="grid gap-8 md:grid-cols-[0.35fr_1fr]">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">02 · Skills</p>
+                        </div>
+                        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            {sortedSkills.map((skill) => (
+                                <div key={skill._id} className="border border-slate-200 p-4">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <p className="text-sm font-semibold text-slate-950">{skill.name}</p>
+                                        {skill.percentage !== undefined ? (
+                                            <span className="text-xs font-semibold" style={{ color: primary }}>
+                                                {skill.percentage}%
+                                            </span>
+                                        ) : null}
+                                    </div>
+                                    {skill.description ? (
+                                        <p className="mt-2 text-xs leading-5 text-slate-500">{skill.description}</p>
+                                    ) : null}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasProjects ? (
+                <section id="preview-projects" className="border-b border-slate-200 px-6 py-14 sm:px-12">
+                    <div className="grid gap-8 md:grid-cols-[0.35fr_1fr]">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">03 · Selected Work</p>
+                        </div>
+                        <div className="space-y-6">
+                            {sortedProjects.map((project) => (
+                                <article key={project._id} className="grid overflow-hidden border border-slate-200 bg-white md:grid-cols-[0.8fr_1.2fr]">
+                                    {project.image ? (
+                                        <div className="h-48 overflow-hidden bg-slate-100 md:h-full">
+                                            <img src={project.image} alt={project.title || "Project"} className="h-full w-full object-cover" />
+                                        </div>
+                                    ) : null}
+                                    <div className="p-5">
+                                        {project.category ? <p className="text-[10px] font-bold uppercase tracking-[0.18em]" style={{ color: primary }}>{project.category}</p> : null}
+                                        <h3 className="mt-2 text-xl font-semibold text-slate-950">{project.title}</h3>
+                                        {project.description ? <p className="mt-3 text-sm leading-7 text-slate-500">{project.description}</p> : null}
+                                        {toArray(project.technologies).length > 0 ? (
+                                            <div className="mt-4 flex flex-wrap gap-2">
+                                                {toArray(project.technologies).map((technology, index) => (
+                                                    <span key={`${technology}-${index}`} className="border border-slate-200 px-2.5 py-1 text-[10px] text-slate-500">
+                                                        {technology}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        ) : null}
+                                        <div className="mt-5 flex flex-wrap gap-2">
+                                            {project.githubUrl ? <a href={project.githubUrl} target="_blank" rel="noreferrer" className="border border-slate-300 px-3 py-2 text-[10px] font-semibold text-slate-700">GitHub ↗</a> : null}
+                                            {project.liveUrl ? <a href={project.liveUrl} target="_blank" rel="noreferrer" className="px-3 py-2 text-[10px] font-semibold text-white" style={{ backgroundColor: primary }}>Live Demo ↗</a> : null}
+                                        </div>
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasExperience ? (
+                <section id="preview-experience" className="border-b border-slate-200 px-6 py-14 sm:px-12">
+                    <div className="grid gap-8 md:grid-cols-[0.35fr_1fr]">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">04 · Experience</p>
+                        </div>
+                        <div className="space-y-6">
+                            {sortedExperiences.map((experience) => (
+                                <div key={experience._id} className="border-l-2 pl-5" style={{ borderColor: `${primary}55` }}>
+                                    <div className="flex flex-col justify-between gap-2 sm:flex-row">
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-slate-950">{experience.jobTitle}</h3>
+                                            {experience.company ? <p className="mt-1 text-sm font-medium" style={{ color: primary }}>{experience.company}</p> : null}
+                                        </div>
+                                        <p className="text-xs text-slate-400">{formatDate(experience.startDate)}{experience.startDate || experience.endDate ? " — " : ""}{experience.currentlyWorking ? "Present" : formatDate(experience.endDate)}</p>
+                                    </div>
+                                    {experience.description ? <p className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-500">{experience.description}</p> : null}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasEducation ? (
+                <section id="preview-education" className="border-b border-slate-200 px-6 py-14 sm:px-12">
+                    <div className="grid gap-8 md:grid-cols-[0.35fr_1fr]">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">05 · Education</p>
+                        </div>
+                        <div className="space-y-4">
+                            {sortedEducation.map((item) => (
+                                <div key={item._id} className="border border-slate-200 p-5">
+                                    <div className="flex flex-col justify-between gap-2 sm:flex-row">
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-slate-950">{item.degree}</h3>
+                                            {item.institution ? <p className="mt-1 text-sm font-medium" style={{ color: primary }}>{item.institution}</p> : null}
+                                            {item.fieldOfStudy ? <p className="mt-1 text-xs text-slate-500">{item.fieldOfStudy}</p> : null}
+                                        </div>
+                                        <p className="text-xs text-slate-400">{formatDate(item.startDate)}{item.startDate || item.endDate ? " — " : ""}{item.currentlyStudying ? "Present" : formatDate(item.endDate)}</p>
+                                    </div>
+                                    {item.grade ? <p className="mt-3 text-xs text-slate-500">Grade: {item.grade}</p> : null}
+                                    {item.description ? <p className="mt-3 text-sm leading-7 text-slate-500">{item.description}</p> : null}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasCertificates ? (
+                <section id="preview-certificates" className="border-b border-slate-200 px-6 py-14 sm:px-12">
+                    <div className="grid gap-8 md:grid-cols-[0.35fr_1fr]">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">06 · Certifications</p>
+                        </div>
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            {sortedCertificates.map((certificate) => (
+                                <article key={certificate._id} className="overflow-hidden border border-slate-200 bg-white">
+                                    {certificate.certificateImage ? (
+                                        <div className="h-44 overflow-hidden bg-slate-100">
+                                            {getMediaType(certificate.certificateImage) === "image" ? (
+                                                <img src={certificate.certificateImage} alt={certificate.title || "Certificate"} className="h-full w-full object-contain" />
+                                            ) : (
+                                                <div className="flex h-full items-center justify-center text-4xl">📜</div>
+                                            )}
+                                        </div>
+                                    ) : null}
+                                    <div className="p-4">
+                                        <h3 className="text-base font-semibold text-slate-950">{certificate.title}</h3>
+                                        {certificate.issuingOrganization ? <p className="mt-1 text-sm font-medium" style={{ color: primary }}>{certificate.issuingOrganization}</p> : null}
+                                        {certificate.issueDate ? <p className="mt-2 text-xs text-slate-400">Issued {formatDate(certificate.issueDate)}</p> : null}
+                                        {certificate.description ? <p className="mt-3 line-clamp-3 text-xs leading-5 text-slate-500">{certificate.description}</p> : null}
+                                        {certificate.certificateImage ? <a href={certificate.certificateImage} target="_blank" rel="noreferrer" className="mt-4 inline-flex border border-slate-300 px-3 py-2 text-[10px] font-semibold text-slate-700">View Certificate ↗</a> : null}
+                                    </div>
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasPosts ? (
+                <section id="preview-posts" className="border-b border-slate-200 px-6 py-14 sm:px-12">
+                    <div className="grid gap-8 md:grid-cols-[0.35fr_1fr]">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">07 · Journal</p>
+                        </div>
+                        <div className="space-y-4">
+                            {sortedPosts.map((post) => (
+                                <article key={post._id} className="border-b border-slate-200 pb-5 last:border-b-0">
+                                    <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-400">
+                                        {post.postType ? <span>{post.postType}</span> : null}
+                                        {post.publishedAt ? <span>· {formatDate(post.publishedAt)}</span> : null}
+                                    </div>
+                                    <h3 className="mt-2 text-xl font-semibold text-slate-950">{post.title}</h3>
+                                    {post.excerpt ? <p className="mt-2 text-sm leading-7 text-slate-500">{post.excerpt}</p> : null}
+                                    {post.content ? <p className="mt-2 line-clamp-3 text-xs leading-6 text-slate-400">{post.content}</p> : null}
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            ) : null}
+
+
+            <SEOBlock variant="minimal" />
+
+
+            {hasContact ? (
+                <section id="preview-contact" className="px-6 py-14 sm:px-12">
+                    <div className="grid gap-8 md:grid-cols-[0.35fr_1fr]">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">09 · Contact</p>
+                        </div>
+                        <div>
+                            <ContactGrid />
+                        </div>
+                    </div>
+                </section>
+            ) : null}
+
+            <footer className="border-t border-slate-200 px-6 py-8 text-center text-xs text-slate-400 sm:px-12">
+                {form.title || user?.name || "Portfolio"}
+            </footer>
+        </div>
+    );
+
+
+    // ========================================
+    // DEVELOPER TEMPLATE
+    // ========================================
+
+    const DeveloperTemplate = () => (
+        <div className="template-developer overflow-hidden rounded-xl border border-emerald-400/20 bg-[#020602] font-mono text-emerald-50">
+
+            <div className="flex items-center gap-2 border-b border-emerald-400/10 bg-[#050a05] px-4 py-3">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-400/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-yellow-400/70" />
+                <span className="h-2.5 w-2.5 rounded-full bg-green-400/70" />
+                <span className="ml-3 text-[10px] text-slate-500">portfolio-terminal</span>
+                <span className="ml-auto text-[9px] text-emerald-400">● online</span>
+            </div>
+
+            <nav className="flex flex-wrap items-center justify-between gap-3 border-b border-emerald-400/10 px-4 py-3 sm:px-7">
+                <p className="text-xs font-bold text-emerald-400">root@portfolio:~$</p>
+                <div className="flex flex-wrap gap-4 text-[9px] text-slate-500">
+                    <a href="#preview-home" className="hover:text-emerald-300">home</a>
+                    {hasAbout ? <a href="#preview-about" className="hover:text-emerald-300">about</a> : null}
+                    {hasSkills ? <a href="#preview-skills" className="hover:text-emerald-300">skills</a> : null}
+                    {hasProjects ? <a href="#preview-projects" className="hover:text-emerald-300">projects</a> : null}
+                    {hasExperience ? <a href="#preview-experience" className="hover:text-emerald-300">experience</a> : null}
+                    {hasContact ? <a href="#preview-contact" className="hover:text-emerald-300">contact</a> : null}
+                </div>
+            </nav>
+
+
+            <section id="preview-home" className="relative overflow-hidden border-b border-emerald-400/10 px-5 py-12 sm:px-9 sm:py-16">
+                <div className="pointer-events-none absolute inset-0 opacity-[0.06]" style={{ backgroundImage: "linear-gradient(rgba(74,222,128,0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(74,222,128,0.35) 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+
+                <div className="relative grid gap-8 lg:grid-cols-[1.4fr_0.6fr] lg:items-end">
+                    <div>
+                        <p className="text-xs text-slate-500">$ whoami</p>
+                        <h2 className="mt-3 break-words text-3xl font-black leading-tight text-emerald-300 sm:text-5xl">
+                            {name}
+                            <span className="animate-pulse text-emerald-500">_</span>
+                        </h2>
+
+                        {form.headline ? (
+                            <p className="mt-4 text-sm text-cyan-300">const role = "{form.headline}";</p>
+                        ) : null}
+
+                        {form.bio ? (
+                            <p className="mt-5 max-w-3xl whitespace-pre-line text-xs leading-7 text-slate-400">
+                                // {form.bio}
+                            </p>
+                        ) : null}
+
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {socialLinks.map((item) => (
+                                <a
+                                    key={item.label}
+                                    href={item.href}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="border border-emerald-400/15 px-3 py-2 text-[9px] text-emerald-300 hover:bg-emerald-400/5"
+                                >
+                                    {item.label}
+                                </a>
+                            ))}
+                        </div>
+
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {hasProjects ? <a href="#preview-projects" className="border border-emerald-400/30 bg-emerald-400/10 px-4 py-2 text-[10px] font-bold text-emerald-300">$ cd projects</a> : null}
+                            {hasContact && (form.email || user?.email) ? <a href={`mailto:${form.email || user?.email || ""}`} className="border border-cyan-400/20 px-4 py-2 text-[10px] text-cyan-300">$ mail --contact</a> : null}
+                        </div>
+                    </div>
+
+                    <div className="rounded-xl border border-emerald-400/15 bg-[#040804] p-4 text-[10px] leading-6 text-slate-500">
+                        <p className="text-emerald-400">{`{`}</p>
+                        <p><span className="text-purple-400">name:</span> "{name}"</p>
+                        <p><span className="text-purple-400">projects:</span> {sortedProjects.length},</p>
+                        <p><span className="text-purple-400">skills:</span> {technologiesCount},</p>
+                        <p><span className="text-purple-400">certificates:</span> {sortedCertificates.length},</p>
+                        <p><span className="text-purple-400">status:</span> "building"</p>
+                        <p className="text-emerald-400">{`}`}</p>
+                    </div>
+                </div>
+            </section>
+
+
+            <div className="grid grid-cols-2 border-b border-emerald-400/10 sm:grid-cols-4">
+                {[
+                    [sortedProjects.length, "projects"],
+                    [sortedExperiences.length, "experience"],
+                    [technologiesCount, "technologies"],
+                    [sortedCertificates.length, "certificates"]
+                ].map(([value, label]) => (
+                    <div key={label} className="border-r border-emerald-400/10 px-3 py-5 text-center last:border-r-0">
+                        <p className="text-lg font-bold text-emerald-300">{value}</p>
+                        <p className="mt-1 text-[9px] text-slate-600">{label}</p>
+                    </div>
+                ))}
+            </div>
+
+
+            {hasAbout ? (
+                <section id="preview-about" className="border-b border-emerald-400/10 px-5 py-10 sm:px-9">
+                    <p className="text-[10px] text-slate-600">01 // about.js</p>
+                    <p className="mt-4 max-w-4xl whitespace-pre-line text-xs leading-7 text-slate-400">
+                        {form.bio}
+                    </p>
+                </section>
+            ) : null}
+
+
+            {hasSkills ? (
+                <section id="preview-skills" className="border-b border-emerald-400/10 px-5 py-10 sm:px-9">
+                    <p className="text-[10px] text-slate-600">02 // skills.json</p>
+                    <div className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2">
+                        {sortedSkills.map((skill) => (
+                            <div key={skill._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
+                                <div className="flex items-center justify-between gap-3">
+                                    <p className="text-xs font-semibold text-emerald-300">{skill.name}</p>
+                                    {skill.percentage !== undefined ? <span className="text-[10px] text-slate-500">{skill.percentage}%</span> : null}
+                                </div>
+                                {skill.percentage !== undefined ? (
+                                    <div className="mt-3 h-1 overflow-hidden bg-white/5">
+                                        <div className="h-full bg-emerald-400" style={{ width: `${Math.max(0, Math.min(100, Number(skill.percentage) || 0))}%` }} />
+                                    </div>
+                                ) : null}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasProjects ? (
+                <section id="preview-projects" className="border-b border-emerald-400/10 px-5 py-10 sm:px-9">
+                    <p className="text-[10px] text-slate-600">03 // projects/</p>
+                    <div className="mt-5 grid grid-cols-1 gap-4 xl:grid-cols-2">
+                        {sortedProjects.map((project) => (
+                            <article key={project._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
+                                <div className="flex items-center justify-between gap-3">
+                                    <h3 className="text-sm font-bold text-emerald-300">{project.title}</h3>
+                                    {project.featured ? <span className="text-[9px] text-yellow-300">[featured]</span> : null}
+                                </div>
+                                {project.category ? <p className="mt-1 text-[9px] text-cyan-300">{project.category}</p> : null}
+                                {project.description ? <p className="mt-3 text-xs leading-6 text-slate-500">{project.description}</p> : null}
+                                {toArray(project.technologies).length > 0 ? (
+                                    <p className="mt-3 text-[9px] leading-5 text-slate-600">{toArray(project.technologies).join(" · ")}</p>
+                                ) : null}
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {project.githubUrl ? <a href={project.githubUrl} target="_blank" rel="noreferrer" className="border border-emerald-400/15 px-3 py-2 text-[9px] text-slate-400">git</a> : null}
+                                    {project.liveUrl ? <a href={project.liveUrl} target="_blank" rel="noreferrer" className="border border-cyan-400/20 px-3 py-2 text-[9px] text-cyan-300">deploy</a> : null}
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasExperience ? (
+                <section id="preview-experience" className="border-b border-emerald-400/10 px-5 py-10 sm:px-9">
+                    <p className="text-[10px] text-slate-600">04 // experience.log</p>
+                    <div className="mt-5 space-y-4">
+                        {sortedExperiences.map((experience) => (
+                            <article key={experience._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
+                                <h3 className="text-sm font-bold text-emerald-300">{experience.jobTitle}</h3>
+                                {experience.company ? <p className="mt-1 text-xs text-cyan-300">{experience.company}</p> : null}
+                                <p className="mt-1 text-[9px] text-slate-600">{formatDate(experience.startDate)}{experience.startDate || experience.endDate ? " → " : ""}{experience.currentlyWorking ? "Present" : formatDate(experience.endDate)}</p>
+                                {experience.description ? <p className="mt-3 whitespace-pre-line text-xs leading-6 text-slate-500">{experience.description}</p> : null}
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasEducation ? (
+                <section id="preview-education" className="border-b border-emerald-400/10 px-5 py-10 sm:px-9">
+                    <p className="text-[10px] text-slate-600">05 // education.md</p>
+                    <div className="mt-5 space-y-4">
+                        {sortedEducation.map((item) => (
+                            <article key={item._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
+                                <h3 className="text-sm font-bold text-emerald-300">{item.degree}</h3>
+                                {item.institution ? <p className="mt-1 text-xs text-cyan-300">{item.institution}</p> : null}
+                                {item.fieldOfStudy ? <p className="mt-1 text-[9px] text-slate-600">{item.fieldOfStudy}</p> : null}
+                                <p className="mt-1 text-[9px] text-slate-600">{formatDate(item.startDate)}{item.startDate || item.endDate ? " → " : ""}{item.currentlyStudying ? "Present" : formatDate(item.endDate)}</p>
+                                {item.description ? <p className="mt-3 text-xs leading-6 text-slate-500">{item.description}</p> : null}
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasCertificates ? (
+                <section id="preview-certificates" className="border-b border-emerald-400/10 px-5 py-10 sm:px-9">
+                    <p className="text-[10px] text-slate-600">06 // certificates/</p>
+                    <div className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
+                        {sortedCertificates.map((certificate) => (
+                            <article key={certificate._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
+                                <div className="flex items-start justify-between gap-3">
+                                    <div>
+                                        <h3 className="text-sm font-bold text-emerald-300">{certificate.title}</h3>
+                                        {certificate.issuingOrganization ? <p className="mt-1 text-[10px] text-cyan-300">{certificate.issuingOrganization}</p> : null}
+                                    </div>
+                                    <span className="text-xl">📄</span>
+                                </div>
+                                {certificate.description ? <p className="mt-3 text-xs leading-6 text-slate-500">{certificate.description}</p> : null}
+                                {certificate.certificateImage ? <a href={certificate.certificateImage} target="_blank" rel="noreferrer" className="mt-4 inline-flex border border-emerald-400/15 px-3 py-2 text-[9px] text-emerald-300">open certificate</a> : null}
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasPosts ? (
+                <section id="preview-posts" className="border-b border-emerald-400/10 px-5 py-10 sm:px-9">
+                    <p className="text-[10px] text-slate-600">07 // posts/</p>
+                    <div className="mt-5 space-y-4">
+                        {sortedPosts.map((post) => (
+                            <article key={post._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
+                                <div className="flex flex-wrap items-center gap-2 text-[9px] text-slate-600">
+                                    {post.postType ? <span>{post.postType}</span> : null}
+                                    {post.publishedAt ? <span>· {formatDate(post.publishedAt)}</span> : null}
+                                </div>
+                                <h3 className="mt-2 text-sm font-bold text-emerald-300">{post.title}</h3>
+                                {post.excerpt ? <p className="mt-2 text-xs leading-6 text-slate-500">{post.excerpt}</p> : null}
+                                {post.content ? <p className="mt-2 line-clamp-4 whitespace-pre-line text-[10px] leading-6 text-slate-600">{post.content}</p> : null}
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            <SEOBlock variant="developer" />
+
+
+            {hasContact ? (
+                <section id="preview-contact" className="border-b border-emerald-400/10 px-5 py-10 sm:px-9">
+                    <p className="text-[10px] text-slate-600">09 // contact.sh</p>
+                    <div className="mt-5">
+                        <ContactGrid />
+                    </div>
+                </section>
+            ) : null}
+
+            <footer className="border-t border-emerald-400/10 px-5 py-6 text-center text-[9px] text-slate-600 sm:px-9">
+                build complete · {form.title || user?.name || "portfolio"}
+            </footer>
+        </div>
+    );
+
+
+    // ========================================
+    // CREATIVE TEMPLATE
+    // ========================================
+
+    const CreativeTemplate = () => (
+        <div className="template-creative relative overflow-hidden rounded-[2rem] border border-fuchsia-400/20 bg-[#090d1f] text-white">
+
+            <div className="pointer-events-none absolute -right-24 top-20 h-64 w-64 rounded-full bg-fuchsia-500/20 blur-[90px]" />
+            <div className="pointer-events-none absolute -left-24 top-[40%] h-72 w-72 rounded-full bg-cyan-400/15 blur-[100px]" />
+            <div className="pointer-events-none absolute bottom-0 right-[25%] h-56 w-56 rounded-full bg-violet-500/15 blur-[90px]" />
+
+
+            <nav className="relative z-10 flex flex-wrap items-center justify-between gap-4 border-b border-white/10 bg-white/[0.03] px-5 py-4 backdrop-blur-xl sm:px-8">
+                <div className="text-base font-black tracking-tight">
+                    {first}<span className="text-fuchsia-300">.</span>{rest}
+                </div>
+
+                <div className="flex flex-wrap gap-4 text-[10px] text-slate-400">
+                    <a href="#preview-home" className="hover:text-white">Home</a>
+                    {hasProjects ? <a href="#preview-projects" className="hover:text-white">Projects</a> : null}
+                    {hasSkills ? <a href="#preview-skills" className="hover:text-white">Skills</a> : null}
+                    {hasCertificates ? <a href="#preview-certificates" className="hover:text-white">Certificates</a> : null}
+                    {hasContact ? <a href="#preview-contact" className="hover:text-white">Let's Talk</a> : null}
+                </div>
+            </nav>
+
+
+            <section id="preview-home" className="relative z-10 grid gap-10 px-6 py-14 sm:px-12 sm:py-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
+                <div>
+                    <div className="inline-flex rounded-full border border-white/15 bg-white/[0.05] px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-fuchsia-200 backdrop-blur">
+                        ✦ Turn ideas into reality
+                    </div>
+
+                    <h2 className="mt-6 max-w-4xl text-5xl font-black leading-[0.92] tracking-[-0.05em] sm:text-7xl">
+                        {name}
+                    </h2>
+
+                    {form.headline ? (
+                        <p className="mt-6 max-w-2xl text-lg font-semibold text-white/85 sm:text-xl">
+                            {form.headline}
+                        </p>
+                    ) : null}
+
+                    {form.bio ? (
+                        <p className="mt-5 max-w-2xl whitespace-pre-line text-sm leading-7 text-slate-300/80">
+                            {form.bio}
+                        </p>
+                    ) : null}
+
+                    <div className="mt-8 flex flex-wrap gap-3">
+                        {hasProjects ? (
+                            <a href="#preview-projects" className="rounded-full bg-fuchsia-400 px-5 py-2.5 text-xs font-black text-slate-950 shadow-[0_15px_45px_rgba(217,70,239,0.25)]">
+                                Explore Projects →
+                            </a>
+                        ) : null}
+                        {hasContact && (form.email || user?.email) ? (
+                            <a href={`mailto:${form.email || user?.email || ""}`} className="rounded-full border border-white/20 bg-white/[0.05] px-5 py-2.5 text-xs font-semibold text-white backdrop-blur">
+                                Let's Talk
+                            </a>
+                        ) : null}
+                    </div>
+
+                    {socialLinks.length > 0 ? (
+                        <div className="mt-7 flex flex-wrap gap-2">
+                            {socialLinks.map((item) => (
+                                <a key={item.label} href={item.href} target="_blank" rel="noreferrer" className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1.5 text-[10px] text-slate-300 backdrop-blur hover:border-fuchsia-300/30">
+                                    {item.label}
+                                </a>
+                            ))}
+                        </div>
+                    ) : null}
+                </div>
+
+                <div className="relative flex justify-center lg:justify-end">
+                    <div className="relative w-full max-w-sm">
+                        <div className="absolute -left-5 top-8 h-20 w-20 rotate-12 rounded-[1.5rem] border border-cyan-300/30 bg-cyan-300/10 backdrop-blur-xl" />
+                        <div className="absolute -bottom-6 right-2 h-24 w-24 -rotate-12 rounded-full border border-fuchsia-300/30 bg-fuchsia-300/10 backdrop-blur-xl" />
+
+                        <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.07] p-3 shadow-2xl backdrop-blur-xl">
+                            <div className="h-72 overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-cyan-300/20 via-violet-400/20 to-fuchsia-400/20">
+                                {form.profileImage ? (
+                                    <img src={form.profileImage} alt={name} className="h-full w-full object-cover" />
+                                ) : (
+                                    <div className="flex h-full items-center justify-center text-7xl font-black text-white/80">
+                                        {name.charAt(0).toUpperCase()}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="flex items-center justify-between gap-4 px-2 pb-1 pt-4">
+                                <div>
+                                    <p className="text-[9px] uppercase tracking-[0.18em] text-fuchsia-200/70">Based in</p>
+                                    <p className="mt-1 text-sm font-semibold text-white">{form.location || "Worldwide"}</p>
+                                </div>
+                                <div className="rounded-full bg-white/10 px-3 py-1.5 text-[9px] font-bold text-cyan-200">{sortedProjects.length} projects</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <div className="relative z-10 grid gap-3 px-6 pb-8 sm:grid-cols-4 sm:px-12">
+                {[
+                    [sortedProjects.length, "Projects"],
+                    [sortedExperiences.length, "Experience"],
+                    [technologiesCount, "Technologies"],
+                    [sortedCertificates.length, "Certificates"]
+                ].map(([value, label]) => (
+                    <div key={label} className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 text-center backdrop-blur-xl">
+                        <p className="text-xl font-black">{value}</p>
+                        <p className="mt-1 text-[9px] uppercase tracking-[0.16em] text-slate-500">{label}</p>
+                    </div>
+                ))}
+            </div>
+
+
+            {hasAbout ? (
+                <section id="preview-about" className="relative z-10 px-6 py-12 sm:px-12">
+                    <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.035] p-6 backdrop-blur-xl sm:p-8">
+                        <div className="flex items-center justify-between gap-4">
+                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200">01 · About</p>
+                            <span className="text-fuchsia-200">✦</span>
+                        </div>
+                        <p className="mt-5 max-w-4xl whitespace-pre-line text-sm leading-8 text-slate-300/85">
+                            {form.bio}
+                        </p>
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasSkills ? (
+                <section id="preview-skills" className="relative z-10 px-6 py-6 sm:px-12">
+                    <div className="mb-5 flex items-end justify-between gap-4">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200">02 · Skills</p>
+                            <h3 className="mt-2 text-2xl font-black">Things I build with.</h3>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                        {sortedSkills.map((skill, index) => (
+                            <div key={skill._id} className="rounded-[1.5rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl transition hover:-translate-y-1 hover:border-fuchsia-300/30">
+                                <div className="flex items-center justify-between gap-3">
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-300/20 to-fuchsia-300/20 text-lg">
+                                            {skill.icon || "✦"}
+                                        </div>
+                                        <div>
+                                            <p className="text-sm font-bold">{skill.name}</p>
+                                            {skill.category ? <p className="mt-0.5 text-[10px] text-slate-500">{skill.category}</p> : null}
+                                        </div>
+                                    </div>
+                                    {skill.percentage !== undefined ? <span className="text-xs font-bold text-cyan-200">{skill.percentage}%</span> : null}
+                                </div>
+                                {skill.percentage !== undefined ? (
+                                    <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/5">
+                                        <div className="h-full rounded-full bg-gradient-to-r from-cyan-300 to-fuchsia-400" style={{ width: `${Math.max(0, Math.min(100, Number(skill.percentage) || 0))}%` }} />
+                                    </div>
+                                ) : null}
+                                {skill.description ? <p className="mt-3 text-xs leading-6 text-slate-500">{skill.description}</p> : null}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasProjects ? (
+                <section id="preview-projects" className="relative z-10 px-6 py-12 sm:px-12">
+                    <div className="mb-6">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-fuchsia-200">03 · Projects</p>
+                        <h3 className="mt-2 text-3xl font-black tracking-tight">Selected experiments & builds.</h3>
+                    </div>
+                    <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+                        {sortedProjects.map((project, index) => (
+                            <article key={project._id} className={`overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.035] backdrop-blur-xl ${index % 3 === 1 ? "lg:translate-y-6" : ""}`}>
+                                {project.image ? (
+                                    <div className="h-56 overflow-hidden bg-gradient-to-br from-cyan-300/10 via-violet-400/10 to-fuchsia-400/10">
+                                        <img src={project.image} alt={project.title || "Project"} className="h-full w-full object-cover transition duration-500 hover:scale-105" />
+                                    </div>
+                                ) : null}
+                                <div className="p-5">
+                                    {project.category ? <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-cyan-200">{project.category}</p> : null}
+                                    <h3 className="mt-2 text-xl font-black">{project.title}</h3>
+                                    {project.description ? <p className="mt-3 text-sm leading-7 text-slate-400">{project.description}</p> : null}
+                                    {toArray(project.technologies).length > 0 ? (
+                                        <div className="mt-4 flex flex-wrap gap-2">
+                                            {toArray(project.technologies).map((technology, technologyIndex) => (
+                                                <span key={`${technology}-${technologyIndex}`} className="rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[10px] text-slate-400">
+                                                    {technology}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    ) : null}
+                                    <div className="mt-5 flex flex-wrap gap-2">
+                                        {project.githubUrl ? <a href={project.githubUrl} target="_blank" rel="noreferrer" className="rounded-full border border-white/10 px-3 py-2 text-[10px] text-slate-300">GitHub ↗</a> : null}
+                                        {project.liveUrl ? <a href={project.liveUrl} target="_blank" rel="noreferrer" className="rounded-full px-3 py-2 text-[10px] font-bold text-slate-950" style={{ backgroundColor: primary }}>Live Demo ↗</a> : null}
+                                    </div>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasExperience ? (
+                <section id="preview-experience" className="relative z-10 px-6 py-12 sm:px-12">
+                    <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl sm:p-8">
+                        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200">04 · Experience</p>
+                        <div className="mt-6 grid gap-4">
+                            {sortedExperiences.map((experience) => (
+                                <article key={experience._id} className="rounded-2xl border border-white/10 bg-black/10 p-5">
+                                    <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                                        <div>
+                                            <h3 className="text-lg font-black">{experience.jobTitle}</h3>
+                                            {experience.company ? <p className="mt-1 text-sm text-fuchsia-200">{experience.company}</p> : null}
+                                        </div>
+                                        <p className="text-[10px] text-slate-500">{formatDate(experience.startDate)}{experience.startDate || experience.endDate ? " — " : ""}{experience.currentlyWorking ? "Present" : formatDate(experience.endDate)}</p>
+                                    </div>
+                                    {experience.description ? <p className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-400">{experience.description}</p> : null}
+                                </article>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasEducation ? (
+                <section id="preview-education" className="relative z-10 px-6 py-6 sm:px-12">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-fuchsia-200">05 · Education</p>
+                    <div className="mt-5 grid gap-4 md:grid-cols-2">
+                        {sortedEducation.map((item) => (
+                            <article key={item._id} className="rounded-[1.5rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl">
+                                <h3 className="text-lg font-black">{item.degree}</h3>
+                                {item.institution ? <p className="mt-1 text-sm text-cyan-200">{item.institution}</p> : null}
+                                {item.fieldOfStudy ? <p className="mt-1 text-xs text-slate-500">{item.fieldOfStudy}</p> : null}
+                                <p className="mt-3 text-[10px] text-slate-500">{formatDate(item.startDate)}{item.startDate || item.endDate ? " — " : ""}{item.currentlyStudying ? "Present" : formatDate(item.endDate)}</p>
+                                {item.grade ? <p className="mt-3 text-xs text-slate-400">Grade: {item.grade}</p> : null}
+                                {item.description ? <p className="mt-3 text-sm leading-7 text-slate-400">{item.description}</p> : null}
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasCertificates ? (
+                <section id="preview-certificates" className="relative z-10 px-6 py-12 sm:px-12">
+                    <div className="mb-5 flex items-end justify-between gap-4">
+                        <div>
+                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200">06 · Certificates</p>
+                            <h3 className="mt-2 text-3xl font-black">Proof of learning.</h3>
+                        </div>
+                    </div>
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+                        {sortedCertificates.map((certificate) => (
+                            <article key={certificate._id} className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.035] backdrop-blur-xl">
+                                {certificate.certificateImage ? (
+                                    <div className="h-52 overflow-hidden bg-white/[0.04]">
+                                        {getMediaType(certificate.certificateImage) === "image" ? (
+                                            <img src={certificate.certificateImage} alt={certificate.title || "Certificate"} className="h-full w-full object-contain" />
+                                        ) : (
+                                            <div className="flex h-full items-center justify-center text-5xl">📜</div>
+                                        )}
+                                    </div>
+                                ) : null}
+                                <div className="p-5">
+                                    <div className="flex items-start justify-between gap-3">
+                                        <div>
+                                            <h3 className="text-lg font-black">{certificate.title}</h3>
+                                            {certificate.issuingOrganization ? <p className="mt-1 text-sm text-fuchsia-200">{certificate.issuingOrganization}</p> : null}
+                                        </div>
+                                        <span className="text-xl">✦</span>
+                                    </div>
+                                    {certificate.issueDate ? <p className="mt-2 text-[10px] text-slate-500">Issued {formatDate(certificate.issueDate)}</p> : null}
+                                    {certificate.description ? <p className="mt-3 line-clamp-3 text-sm leading-6 text-slate-400">{certificate.description}</p> : null}
+                                    {certificate.certificateImage ? <a href={certificate.certificateImage} target="_blank" rel="noreferrer" className="mt-4 inline-flex rounded-full border border-white/10 px-3 py-2 text-[10px] font-semibold text-slate-300">View Certificate ↗</a> : null}
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            {hasPosts ? (
+                <section id="preview-posts" className="relative z-10 px-6 py-12 sm:px-12">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-fuchsia-200">07 · Posts</p>
+                    <div className="mt-5 grid gap-4 md:grid-cols-2">
+                        {sortedPosts.map((post, index) => (
+                            <article key={post._id} className={`rounded-[1.5rem] border border-white/10 bg-white/[0.035] p-5 backdrop-blur-xl ${index % 2 ? "md:translate-y-5" : ""}`}>
+                                <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-500">
+                                    {post.postType ? <span className="rounded-full border border-white/10 px-2 py-1">{post.postType}</span> : null}
+                                    {post.publishedAt ? <span>{formatDate(post.publishedAt)}</span> : null}
+                                </div>
+                                <h3 className="mt-3 text-lg font-black">{post.title}</h3>
+                                {post.excerpt ? <p className="mt-2 text-sm leading-6 text-slate-400">{post.excerpt}</p> : null}
+                                {post.content ? <p className="mt-3 line-clamp-4 whitespace-pre-line text-xs leading-6 text-slate-500">{post.content}</p> : null}
+                            </article>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+
+            <SEOBlock />
+
+
+            {hasContact ? (
+                <section id="preview-contact" className="relative z-10 px-6 py-12 sm:px-12">
+                    <div className="rounded-[2rem] border border-white/10 bg-white/[0.04] p-6 backdrop-blur-xl sm:p-8">
+                        <div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
+                            <div>
+                                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200">09 · Contact</p>
+                                <h3 className="mt-2 text-3xl font-black">Let's make something.</h3>
+                            </div>
+                            {form.email || user?.email ? (
+                                <a href={`mailto:${form.email || user?.email || ""}`} className="rounded-full bg-cyan-300 px-5 py-2.5 text-xs font-black text-slate-950">Start a Conversation →</a>
                             ) : null}
                         </div>
-                    </section>
-                ) : null}
+                        <div className="mt-6">
+                            <ContactGrid />
+                        </div>
+                    </div>
+                </section>
+            ) : null}
 
-                {/* ========================================
-                    FOOTER
-                ======================================== */}
+            <footer className="relative z-10 px-6 py-10 text-center text-xs text-slate-600 sm:px-12">
+                {form.title || user?.name || "Portfolio"} · designed with personality
+            </footer>
+        </div>
+    );
 
-                <footer
-                    className="
-                        px-6
-                        py-8
-                        text-center
-                        sm:px-12
-                    "
-                >
-                    <p
-                        className="
-                            text-xs
-                            text-slate-600
-                        "
-                    >
-                        {form.title ||
-                            user?.name ||
-                            "Portfolio"}
+
+    // ========================================
+    // OUTER PREVIEW WRAPPER
+    // ========================================
+
+    return (
+        <section
+            data-template={selectedTemplate}
+            className="min-w-0 rounded-3xl border border-white/10 bg-[#070b16] p-3 shadow-2xl sm:p-4"
+        >
+            <style>{`
+                .template-modern article,
+                .template-modern > nav,
+                .template-modern > section,
+                .template-modern footer {
+                    transition: border-color 220ms ease, background-color 220ms ease, transform 220ms ease;
+                }
+
+                .template-modern article:hover {
+                    border-color: rgba(34, 211, 238, 0.22) !important;
+                }
+
+                .template-minimal article,
+                .template-minimal a,
+                .template-minimal div {
+                    transition: border-color 180ms ease, transform 180ms ease, background-color 180ms ease;
+                }
+
+                .template-minimal article:hover {
+                    border-color: #cbd5e1;
+                    transform: translateY(-2px);
+                }
+
+                .template-developer section,
+                .template-developer article {
+                    background-image: linear-gradient(rgba(74,222,128,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(74,222,128,0.02) 1px, transparent 1px);
+                    background-size: 24px 24px;
+                }
+
+                .template-developer a:hover,
+                .template-developer article:hover {
+                    border-color: rgba(74, 222, 128, 0.28) !important;
+                }
+
+                .template-creative article {
+                    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+                }
+
+                .template-creative article:hover {
+                    transform: translateY(-5px) rotate(-0.15deg);
+                    border-color: rgba(217, 70, 239, 0.24) !important;
+                    box-shadow: 0 20px 50px rgba(0,0,0,0.16);
+                }
+            `}</style>
+
+
+            {/* PREVIEW LABEL */}
+
+            <div className="mb-3 flex items-center justify-between px-2">
+                <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">
+                        Live Preview · {selectedTemplate}
                     </p>
-                </footer>
+                    <p className="mt-1 text-xs text-slate-600">
+                        Real portfolio data
+                    </p>
+                </div>
+
+                <span className="inline-flex items-center gap-2 text-xs text-emerald-300">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    Live
+                </span>
             </div>
+
+
+            {dataError ? (
+                <div className="mb-3 rounded-xl border border-red-400/20 bg-red-400/5 px-4 py-3 text-xs text-red-300">
+                    {dataError}
+                </div>
+            ) : null}
+
+
+            {selectedTemplate === "modern" ? (
+                <ModernTemplate />
+            ) : selectedTemplate === "minimal" ? (
+                <MinimalTemplate />
+            ) : selectedTemplate === "developer" ? (
+                <DeveloperTemplate />
+            ) : (
+                <CreativeTemplate />
+            )}
+
         </section>
     );
 };
