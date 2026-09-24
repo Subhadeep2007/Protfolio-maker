@@ -38,6 +38,13 @@ const uploadPostMedia = (
             const mimeType =
                 file.mimetype || "";
 
+            const originalName =
+                (file.originalname || "").toLowerCase();
+
+            const isAudio =
+                mimeType.startsWith("audio/") ||
+                /\.(mp3|wav|aac|m4a|flac|aiff|ogg|opus|wma)$/.test(originalName);
+
 
             // ========================================
             // RESOURCE TYPE
@@ -46,12 +53,28 @@ const uploadPostMedia = (
             let resourceType =
                 "raw";
 
+            // Cloudinary serves raw PDFs as attachments. Store PDFs as image
+            // assets so browsers can render them in a tab or an iframe.
+            if (
+                isAudio
+            ) {
+                // Cloudinary stores audio under its video resource type, but
+                // the delivered URL keeps the audio extension for <audio>.
+                resourceType = "video";
+            }
+            else if (
+                mimeType === "application/pdf" ||
+                originalName.endsWith(".pdf")
+            ) {
+                resourceType = "image";
+            }
+
 
             // ========================================
             // IMAGE
             // ========================================
 
-            if (
+            else if (
                 mimeType.startsWith(
                     "image/"
                 )
@@ -68,20 +91,6 @@ const uploadPostMedia = (
             else if (
                 mimeType.startsWith(
                     "video/"
-                )
-            ) {
-
-                resourceType =
-                    "video";
-            }
-
-
-            // ========================================
-            // AUDIO
-            // ========================================
-            else if (
-                mimeType.startsWith(
-                    "audio/"
                 )
             ) {
 

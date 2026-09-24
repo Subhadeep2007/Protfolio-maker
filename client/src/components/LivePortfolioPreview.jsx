@@ -75,6 +75,16 @@ const getMediaType = (url) => {
         .split("#")[0]
         .toLowerCase();
 
+    // Audio assets uploaded to Cloudinary use /video/upload/, so inspect the
+    // file extension before classifying by Cloudinary resource type.
+    if (/\.(mp3|wav|aac|m4a|flac|aiff|ogg|opus|wma)$/.test(cleanUrl)) {
+        return "audio";
+    }
+
+    if (cleanUrl.endsWith(".pdf")) {
+        return "pdf";
+    }
+
     // ========================================
     // CLOUDINARY RESOURCE TYPE
     // ========================================
@@ -126,7 +136,7 @@ const getMediaType = (url) => {
     // ========================================
 
     if (
-        /\.(mp3|wav|aac|m4a|flac|aiff)$/.test(
+        /\.(mp3|wav|aac|m4a|flac|aiff|ogg|opus|wma)$/.test(
             cleanUrl
         )
     ) {
@@ -1563,6 +1573,14 @@ const PostCard = ({
                                 Open ↗
                             </a>
                         </div>
+                    ) : null}
+
+                    {mediaType === "pdf" ? (
+                        <iframe
+                            src={post.coverImage}
+                            title={`${post.title || "Post"} PDF`}
+                            className="h-96 w-full bg-white"
+                        />
                     ) : null}
 
                     {mediaType === "file" ? (
@@ -3136,10 +3154,53 @@ const LivePortfolioPreview = ({
                         <div className="space-y-4">
                             {sortedPosts.map((post) => (
                                 <article key={post._id} className="border-b border-slate-200 pb-5 last:border-b-0">
-                                    {post.coverImage && getMediaType(post.coverImage) === "image" ? (
-                                        <div className="mb-5 h-44 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-                                            <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
-                                        </div>
+                                    {post.coverImage ? (
+                                        <>
+                                            {getMediaType(post.coverImage) === "image" ? (
+                                                <div className="mb-5 h-44 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+                                                    <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
+                                                </div>
+                                            ) : null}
+
+                                            {getMediaType(post.coverImage) === "video" ? (
+                                                <div className="mb-5 h-44 overflow-hidden rounded-xl border border-slate-200 bg-slate-950">
+                                                    <video
+                                                        src={post.coverImage}
+                                                        controls
+                                                        preload="metadata"
+                                                        className="h-full w-full object-contain"
+                                                    />
+                                                </div>
+                                            ) : null}
+
+                                            {getMediaType(post.coverImage) === "audio" ? (
+                                                <div className="mb-5 flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-100 p-4">
+                                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-lg">🎵</div>
+                                                    <audio src={post.coverImage} controls className="min-w-0 flex-1" />
+                                                    <a href={post.coverImage} target="_blank" rel="noreferrer" className="shrink-0 border border-slate-300 px-3 py-2 text-[10px] font-semibold text-slate-700">Open ↗</a>
+                                                </div>
+                                            ) : null}
+
+                                            {getMediaType(post.coverImage) === "pdf" ? (
+                                                <div className="mb-5 overflow-hidden rounded-xl border border-slate-200 bg-white">
+                                                    <iframe
+                                                        src={post.coverImage}
+                                                        title={`${post.title || "Post"} PDF`}
+                                                        className="h-96 w-full bg-white"
+                                                    />
+                                                </div>
+                                            ) : null}
+
+                                            {getMediaType(post.coverImage) === "file" ? (
+                                                <div className="mb-5 flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-100 p-4">
+                                                    <div className="flex min-w-0 items-center gap-3">
+                                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-lg">📎</div>
+                                                        <span className="truncate text-xs font-medium text-slate-700">Attached File</span>
+                                                    </div>
+                                                    <a href={post.coverImage} target="_blank" rel="noreferrer" className="shrink-0 bg-slate-950 px-3 py-2 text-[10px] font-semibold text-white">Open ↗</a>
+                                                </div>
+                                            ) : null}
+                                        </>
                                     ) : null}
                                     <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-400">
                                         {post.postType ? <span>{post.postType}</span> : null}
@@ -3437,10 +3498,41 @@ const LivePortfolioPreview = ({
                     <div className="mt-5 space-y-4">
                         {sortedPosts.map((post) => (
                             <article key={post._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
-                                {post.coverImage && getMediaType(post.coverImage) === "image" ? (
-                                    <div className="mb-4 h-40 overflow-hidden border border-emerald-400/10 bg-black/20">
-                                        <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
-                                    </div>
+                                {post.coverImage ? (
+                                    <>
+                                        {getMediaType(post.coverImage) === "image" ? (
+                                            <div className="mb-4 h-40 overflow-hidden border border-emerald-400/10 bg-black/20">
+                                                <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
+                                            </div>
+                                        ) : null}
+
+                                        {getMediaType(post.coverImage) === "video" ? (
+                                            <div className="mb-4 h-40 overflow-hidden border border-emerald-400/10 bg-black">
+                                                <video src={post.coverImage} controls preload="metadata" className="h-full w-full object-contain" />
+                                            </div>
+                                        ) : null}
+
+                                        {getMediaType(post.coverImage) === "audio" ? (
+                                            <div className="mb-4 flex items-center gap-3 border border-emerald-400/10 bg-emerald-400/[0.03] p-3">
+                                                <span className="text-lg">🎵</span>
+                                                <audio src={post.coverImage} controls className="min-w-0 flex-1" />
+                                                <a href={post.coverImage} target="_blank" rel="noreferrer" className="shrink-0 border border-emerald-400/15 px-3 py-2 text-[9px] text-emerald-300">open ↗</a>
+                                            </div>
+                                        ) : null}
+
+                                        {getMediaType(post.coverImage) === "pdf" ? (
+                                            <div className="mb-4 overflow-hidden border border-emerald-400/10 bg-white">
+                                                <iframe src={post.coverImage} title={`${post.title || "Post"} PDF`} className="h-96 w-full bg-white" />
+                                            </div>
+                                        ) : null}
+
+                                        {getMediaType(post.coverImage) === "file" ? (
+                                            <div className="mb-4 flex items-center justify-between gap-3 border border-emerald-400/10 bg-emerald-400/[0.03] p-3">
+                                                <div className="flex min-w-0 items-center gap-3"><span className="text-lg">📎</span><span className="truncate text-[10px] text-slate-500">Attached File</span></div>
+                                                <a href={post.coverImage} target="_blank" rel="noreferrer" className="shrink-0 border border-emerald-400/15 px-3 py-2 text-[9px] text-emerald-300">open ↗</a>
+                                            </div>
+                                        ) : null}
+                                    </>
                                 ) : null}
                                 <div className="flex flex-wrap items-center gap-2 text-[9px] text-slate-600">
                                     {post.postType ? <span>{post.postType}</span> : null}
@@ -3798,10 +3890,41 @@ const LivePortfolioPreview = ({
                     <div className="mt-5 grid gap-4 md:grid-cols-2">
                         {sortedPosts.map((post, index) => (
                             <article key={post._id} className={`overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.035] backdrop-blur-xl ${index % 2 ? "md:translate-y-5" : ""}`}>
-                                {post.coverImage && getMediaType(post.coverImage) === "image" ? (
-                                    <div className="h-52 overflow-hidden bg-white/[0.04]">
-                                        <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
-                                    </div>
+                                {post.coverImage ? (
+                                    <>
+                                        {getMediaType(post.coverImage) === "image" ? (
+                                            <div className="h-52 overflow-hidden bg-white/[0.04]">
+                                                <img src={post.coverImage} alt={post.title || "Post"} className="h-full w-full object-cover" />
+                                            </div>
+                                        ) : null}
+
+                                        {getMediaType(post.coverImage) === "video" ? (
+                                            <div className="h-52 overflow-hidden bg-black">
+                                                <video src={post.coverImage} controls preload="metadata" className="h-full w-full object-contain" />
+                                            </div>
+                                        ) : null}
+
+                                        {getMediaType(post.coverImage) === "audio" ? (
+                                            <div className="flex items-center gap-3 bg-white/[0.03] px-4 py-5">
+                                                <span className="text-lg">🎵</span>
+                                                <audio src={post.coverImage} controls className="min-w-0 flex-1" />
+                                                <a href={post.coverImage} target="_blank" rel="noreferrer" className="shrink-0 rounded-full border border-white/10 px-3 py-2 text-[10px] text-slate-300">Open ↗</a>
+                                            </div>
+                                        ) : null}
+
+                                        {getMediaType(post.coverImage) === "pdf" ? (
+                                            <div className="overflow-hidden bg-white">
+                                                <iframe src={post.coverImage} title={`${post.title || "Post"} PDF`} className="h-96 w-full bg-white" />
+                                            </div>
+                                        ) : null}
+
+                                        {getMediaType(post.coverImage) === "file" ? (
+                                            <div className="flex items-center justify-between gap-3 bg-white/[0.03] px-4 py-5">
+                                                <div className="flex min-w-0 items-center gap-3"><span className="text-lg">📎</span><span className="truncate text-[10px] text-slate-500">Attached File</span></div>
+                                                <a href={post.coverImage} target="_blank" rel="noreferrer" className="shrink-0 rounded-full border border-white/10 px-3 py-2 text-[10px] text-slate-300">Open ↗</a>
+                                            </div>
+                                        ) : null}
+                                    </>
                                 ) : null}
                                 <div className="p-5">
                                     <div className="flex flex-wrap items-center gap-2 text-[10px] text-slate-500">

@@ -97,6 +97,16 @@ function getMediaType(url) {
         .split("#")[0]
         .toLowerCase();
 
+    // Audio assets uploaded to Cloudinary use /video/upload/, so inspect the
+    // file extension before classifying by Cloudinary resource type.
+    if (/\.(mp3|wav|aac|m4a|flac|aiff|ogg|opus|wma)$/.test(cleanUrl)) {
+        return "audio";
+    }
+
+    if (cleanUrl.endsWith(".pdf")) {
+        return "pdf";
+    }
+
     // Cloudinary resource type
     if (
         cleanUrl.includes("/image/upload/")
@@ -136,7 +146,7 @@ function getMediaType(url) {
 
     // Normal audio extensions
     if (
-        /\.(mp3|wav|aac|m4a|flac|aiff)$/.test(
+        /\.(mp3|wav|aac|m4a|flac|aiff|ogg|opus|wma)$/.test(
             cleanUrl
         )
     ) {
@@ -979,6 +989,12 @@ if (!uploaded || !uploaded.url) {
                                                 bg-black
                                             "
                                         />
+                                    ) : mediaType === "pdf" ? (
+                                        <iframe
+                                            src={form.coverImage}
+                                            title="Post PDF preview"
+                                            className="h-96 w-full bg-white"
+                                        />
                                     ) : mediaType ===
                                       "audio" ? (
                                         <div
@@ -1639,6 +1655,14 @@ function PostViewModal({
                         <audio src={post.coverImage} controls className="mb-6 w-full" />
                     ) : null}
 
+                    {post.coverImage && mediaType === "pdf" ? (
+                        <iframe
+                            src={post.coverImage}
+                            title={`${post.title || "Post"} PDF`}
+                            className="mb-6 h-[70vh] w-full rounded-xl border border-white/10 bg-white"
+                        />
+                    ) : null}
+
                     <h2 className="break-words text-2xl font-bold text-white sm:text-3xl">
                         {post.title || "Untitled Post"}
                     </h2>
@@ -1679,7 +1703,7 @@ function PostViewModal({
                         {post.githubUrl ? <a href={post.githubUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-300 hover:bg-white/[0.06]">GitHub ↗</a> : null}
                         {post.demoUrl ? <a href={post.demoUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-cyan-400/10 bg-cyan-400/[0.03] px-3 py-2 text-xs text-cyan-300 hover:bg-cyan-400/10">Demo ↗</a> : null}
                         {post.externalUrl ? <a href={post.externalUrl} target="_blank" rel="noreferrer" className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-300 hover:bg-white/[0.06]">External ↗</a> : null}
-                        {post.coverImage && mediaType === "file" ? <a href={post.coverImage} target="_blank" rel="noreferrer" className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-300 hover:bg-white/[0.06]">Open attachment ↗</a> : null}
+                        {post.coverImage && (mediaType === "file" || mediaType === "pdf") ? <a href={post.coverImage} target="_blank" rel="noreferrer" className="rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-300 hover:bg-white/[0.06]">Open attachment ↗</a> : null}
                     </div>
                 </div>
             </article>

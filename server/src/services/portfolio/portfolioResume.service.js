@@ -7,9 +7,14 @@ const uploadPortfolioResume = (file) => {
             return;
         }
 
+        const isPdf = file.mimetype === "application/pdf" ||
+            (file.originalname || "").toLowerCase().endsWith(".pdf");
+
         const uploadStream = cloudinary.uploader.upload_stream({
                 folder: "portfolio/resumes",
-                resource_type: "raw",
+                // PDFs delivered as raw files download automatically. The
+                // image resource type lets Cloudinary serve them inline.
+                resource_type: isPdf ? "image" : "raw",
                 use_filename: true,
                 unique_filename: true,
                 overwrite: false
