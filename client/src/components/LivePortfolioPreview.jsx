@@ -137,6 +137,16 @@ const getMediaType = (url) => {
 };
 
 // ========================================
+// LOCATION MAP
+// ========================================
+
+const getMapUrl = (location) =>
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+        location || ""
+    )}`;
+
+
+// ========================================
 // METRIC
 // ========================================
 
@@ -808,18 +818,15 @@ const ExperienceCard = ({
                 </div>
 
                 {experience.location ? (
-                    <p
-                        className="
-                            mt-2
-                            text-xs
-                            text-slate-500
-                        "
+                    <a
+                        href={getMapUrl(experience.location)}
+                        target="_blank"
+                        rel="noreferrer"
+                        title={`Open ${experience.location} in Google Maps`}
+                        className="mt-2 inline-flex text-xs text-slate-500 transition hover:text-cyan-300 hover:underline"
                     >
-                        📍{" "}
-                        {
-                            experience.location
-                        }
-                    </p>
+                        📍 {experience.location} ↗
+                    </a>
                 ) : null}
 
                 {experience.description ? (
@@ -1039,18 +1046,15 @@ const EducationCard = ({
             </div>
 
             {education.location ? (
-                <p
-                    className="
-                        mt-3
-                        text-xs
-                        text-slate-500
-                    "
+                <a
+                    href={getMapUrl(education.location)}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={`Open ${education.location} in Google Maps`}
+                    className="mt-3 inline-flex text-xs text-slate-500 transition hover:text-cyan-300 hover:underline"
                 >
-                    📍{" "}
-                    {
-                        education.location
-                    }
-                </p>
+                    📍 {education.location} ↗
+                </a>
             ) : null}
 
             {education.grade ? (
@@ -2481,14 +2485,20 @@ const LivePortfolioPreview = ({
             ) : null}
 
             {form.location ? (
-                <div className="rounded-2xl border p-4">
+                <a
+                    href={getMapUrl(form.location)}
+                    target="_blank"
+                    rel="noreferrer"
+                    title={`Open ${form.location} in Google Maps`}
+                    className="rounded-2xl border p-4"
+                >
                     <p className="text-[9px] font-bold uppercase tracking-[0.18em]">
                         Location
                     </p>
                     <p className="mt-2 text-sm">
-                        {form.location}
+                        📍 {form.location} ↗
                     </p>
-                </div>
+                </a>
             ) : null}
 
             {form.website ? (
@@ -2649,9 +2659,15 @@ const LivePortfolioPreview = ({
                     ) : null}
 
                     {form.location ? (
-                        <p className="mt-4 text-xs text-slate-500">
-                            📍 {form.location}
-                        </p>
+                        <a
+                            href={getMapUrl(form.location)}
+                            target="_blank"
+                            rel="noreferrer"
+                            title={`Open ${form.location} in Google Maps`}
+                            className="mt-4 inline-flex text-xs text-slate-500 transition hover:text-cyan-300"
+                        >
+                            📍 {form.location} ↗
+                        </a>
                     ) : null}
 
                     {socialLinks.length > 0 ? (
@@ -2696,7 +2712,7 @@ const LivePortfolioPreview = ({
 
                 <div className="flex justify-center">
                     <div
-                        className="relative flex h-56 w-56 items-center justify-center rounded-full border sm:h-72 sm:w-72"
+                        className="profile-image-frame relative flex h-56 w-56 items-center justify-center rounded-full border sm:h-72 sm:w-72"
                         style={{
                             borderColor: `${primary}55`,
                             boxShadow: `0 0 100px ${primary}22`
@@ -2707,7 +2723,7 @@ const LivePortfolioPreview = ({
 
                         <div className="flex h-44 w-44 items-center justify-center overflow-hidden rounded-full bg-[#0b1222] text-5xl font-black text-cyan-300 sm:h-56 sm:w-56">
                             {form.profileImage ? (
-                                <img src={form.profileImage} alt={name} className="h-full w-full object-cover" />
+                                <img src={form.profileImage} alt={name} className="profile-image-media h-full w-full object-cover transition duration-500" />
                             ) : (
                                 name.charAt(0).toUpperCase()
                             )}
@@ -2841,9 +2857,9 @@ const LivePortfolioPreview = ({
 
             <section id="preview-home" className="px-6 py-16 sm:px-12 sm:py-24">
                 <div className="mx-auto mb-8 flex justify-center">
-                    <div className="h-28 w-28 overflow-hidden rounded-full border border-slate-200 bg-slate-100 sm:h-36 sm:w-36">
+                    <div className="profile-image-frame h-28 w-28 overflow-hidden rounded-full border border-slate-200 bg-slate-100 sm:h-36 sm:w-36">
                         {form.profileImage ? (
-                            <img src={form.profileImage} alt={name} className="h-full w-full object-cover" />
+                            <img src={form.profileImage} alt={name} className="profile-image-media h-full w-full object-cover transition duration-500" />
                         ) : (
                             <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-slate-400">
                                 {name.charAt(0).toUpperCase()}
@@ -2854,7 +2870,17 @@ const LivePortfolioPreview = ({
 
                 <div className="mx-auto max-w-5xl">
                     <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">
-                        Portfolio · {form.location || "Independent Developer"}
+                        Portfolio · {form.location ? (
+                            <a
+                                href={getMapUrl(form.location)}
+                                target="_blank"
+                                rel="noreferrer"
+                                title={`Open ${form.location} in Google Maps`}
+                                className="transition hover:text-slate-950 hover:underline"
+                            >
+                                {form.location} ↗
+                            </a>
+                        ) : "Independent Developer"}
                     </p>
 
                     <h2 className="mt-6 max-w-4xl text-5xl font-semibold leading-[0.98] tracking-[-0.055em] text-slate-950 sm:text-7xl">
@@ -3240,10 +3266,10 @@ const LivePortfolioPreview = ({
                     </div>
 
                     <div className="space-y-4">
-                        <div className="flex justify-center rounded-xl border border-emerald-400/15 bg-[#040804] p-4">
+                        <div className="profile-image-frame flex justify-center rounded-xl border border-emerald-400/15 bg-[#040804] p-4">
                             <div className="h-36 w-36 overflow-hidden rounded-full border border-emerald-400/20 bg-[#050a05]">
                                 {form.profileImage ? (
-                                    <img src={form.profileImage} alt={name} className="h-full w-full object-cover" />
+                                    <img src={form.profileImage} alt={name} className="profile-image-media h-full w-full object-cover transition duration-500" />
                                 ) : (
                                     <div className="flex h-full w-full items-center justify-center text-3xl font-bold text-emerald-400">
                                         {name.charAt(0).toUpperCase()}
@@ -3544,10 +3570,10 @@ const LivePortfolioPreview = ({
                         <div className="absolute -left-5 top-8 h-20 w-20 rotate-12 rounded-[1.5rem] border border-cyan-300/30 bg-cyan-300/10 backdrop-blur-xl" />
                         <div className="absolute -bottom-6 right-2 h-24 w-24 -rotate-12 rounded-full border border-fuchsia-300/30 bg-fuchsia-300/10 backdrop-blur-xl" />
 
-                        <div className="relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.07] p-3 shadow-2xl backdrop-blur-xl">
+                        <div className="profile-image-frame relative overflow-hidden rounded-[2rem] border border-white/15 bg-white/[0.07] p-3 shadow-2xl backdrop-blur-xl">
                             <div className="h-72 overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-cyan-300/20 via-violet-400/20 to-fuchsia-400/20">
                                 {form.profileImage ? (
-                                    <img src={form.profileImage} alt={name} className="h-full w-full object-cover" />
+                                    <img src={form.profileImage} alt={name} className="profile-image-media h-full w-full object-cover transition duration-500" />
                                 ) : (
                                     <div className="flex h-full items-center justify-center text-7xl font-black text-white/80">
                                         {name.charAt(0).toUpperCase()}
@@ -3558,7 +3584,19 @@ const LivePortfolioPreview = ({
                             <div className="flex items-center justify-between gap-4 px-2 pb-1 pt-4">
                                 <div>
                                     <p className="text-[9px] uppercase tracking-[0.18em] text-fuchsia-200/70">Based in</p>
-                                    <p className="mt-1 text-sm font-semibold text-white">{form.location || "Worldwide"}</p>
+                                    {form.location ? (
+                                        <a
+                                            href={getMapUrl(form.location)}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            title={`Open ${form.location} in Google Maps`}
+                                            className="mt-1 inline-flex text-sm font-semibold text-white transition hover:text-fuchsia-200 hover:underline"
+                                        >
+                                            {form.location} ↗
+                                        </a>
+                                    ) : (
+                                        <p className="mt-1 text-sm font-semibold text-white">Worldwide</p>
+                                    )}
                                 </div>
                                 <div className="rounded-full bg-white/10 px-3 py-1.5 text-[9px] font-bold text-cyan-200">{sortedProjects.length} projects</div>
                             </div>
@@ -3827,47 +3865,587 @@ const LivePortfolioPreview = ({
             className="min-w-0 rounded-3xl border border-white/10 bg-[#070b16] p-3 shadow-2xl sm:p-4"
         >
             <style>{`
-                .template-modern article,
-                .template-modern > nav,
+                /* ========================================
+                   UNIVERSAL SECTION HOVER
+                ======================================== */
+
                 .template-modern > section,
-                .template-modern footer {
-                    transition: border-color 220ms ease, background-color 220ms ease, transform 220ms ease;
+                .template-modern > footer,
+                .template-minimal > section,
+                .template-minimal > footer,
+                .template-developer > section,
+                .template-developer > footer,
+                .template-creative > section,
+                .template-creative > footer {
+                    position: relative;
+                    transition:
+                        transform 260ms ease,
+                        border-color 260ms ease,
+                        background-color 260ms ease,
+                        box-shadow 260ms ease;
                 }
 
-                .template-modern article:hover {
-                    border-color: rgba(34, 211, 238, 0.22) !important;
-                }
-
-                .template-minimal article,
-                .template-minimal a,
-                .template-minimal div {
-                    transition: border-color 180ms ease, transform 180ms ease, background-color 180ms ease;
-                }
-
-                .template-minimal article:hover {
-                    border-color: #cbd5e1;
+                .template-modern > section:hover {
+                    border-color: rgba(34, 211, 238, 0.30) !important;
+                    background-color: rgba(34, 211, 238, 0.028);
+                    box-shadow: inset 0 0 55px rgba(34, 211, 238, 0.045);
                     transform: translateY(-2px);
                 }
 
-                .template-developer section,
-                .template-developer article {
-                    background-image: linear-gradient(rgba(74,222,128,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(74,222,128,0.02) 1px, transparent 1px);
-                    background-size: 24px 24px;
+                .template-minimal > section:hover {
+                    border-color: #94a3b8 !important;
+                    background-color: rgba(255,255,255,0.88);
+                    box-shadow: inset 0 0 45px rgba(15,23,42,0.035);
+                    transform: translateY(-2px);
                 }
 
-                .template-developer a:hover,
-                .template-developer article:hover {
-                    border-color: rgba(74, 222, 128, 0.28) !important;
+                .template-developer > section:hover {
+                    border-color: rgba(74,222,128,0.34) !important;
+                    background-color: rgba(74,222,128,0.020);
+                    box-shadow: inset 0 0 50px rgba(74,222,128,0.05);
+                    transform: translateX(2px);
                 }
 
-                .template-creative article {
-                    transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+                .template-creative > section:hover {
+                    border-color: rgba(217,70,239,0.34) !important;
+                    background-color: rgba(217,70,239,0.028);
+                    box-shadow: inset 0 0 60px rgba(217,70,239,0.045);
+                    transform: translateY(-3px);
                 }
 
-                .template-creative article:hover {
-                    transform: translateY(-5px) rotate(-0.15deg);
-                    border-color: rgba(217, 70, 239, 0.24) !important;
-                    box-shadow: 0 20px 50px rgba(0,0,0,0.16);
+                /* ========================================
+                   UNIVERSAL CARD HOVER
+                ======================================== */
+
+                .template-modern article,
+                .template-modern #preview-skills .grid > div,
+                .template-minimal article,
+                .template-minimal #preview-skills .grid > div,
+                .template-minimal #preview-experience .space-y-6 > div,
+                .template-minimal #preview-education .space-y-4 > div,
+                .template-developer article,
+                .template-developer #preview-skills .grid > div,
+                .template-creative article,
+                .template-creative #preview-skills .grid > div {
+                    transition:
+                        transform 240ms ease,
+                        border-color 240ms ease,
+                        background-color 240ms ease,
+                        box-shadow 240ms ease;
+                }
+
+                .template-modern article:hover,
+                .template-modern #preview-skills .grid > div:hover {
+                    transform: translateY(-6px);
+                    border-color: rgba(34,211,238,0.48) !important;
+                    box-shadow: 0 20px 46px rgba(34,211,238,0.11);
+                    background-color: rgba(34,211,238,0.038);
+                }
+
+                .template-minimal article:hover,
+                .template-minimal #preview-skills .grid > div:hover,
+                .template-minimal #preview-experience .space-y-6 > div:hover,
+                .template-minimal #preview-education .space-y-4 > div:hover {
+                    transform: translateY(-5px);
+                    border-color: #64748b !important;
+                    box-shadow: 0 16px 34px rgba(15,23,42,0.10);
+                    background-color: rgba(255,255,255,0.94);
+                }
+
+                .template-developer article:hover,
+                .template-developer #preview-skills .grid > div:hover {
+                    transform: translateX(5px);
+                    border-color: rgba(74,222,128,0.52) !important;
+                    box-shadow: 0 0 30px rgba(74,222,128,0.12);
+                    background-color: rgba(74,222,128,0.04);
+                }
+
+                .template-creative article:hover,
+                .template-creative #preview-skills .grid > div:hover {
+                    transform: translateY(-7px) rotate(-0.25deg) scale(1.012);
+                    border-color: rgba(217,70,239,0.50) !important;
+                    box-shadow: 0 22px 50px rgba(217,70,239,0.14);
+                    background-color: rgba(217,70,239,0.045);
+                }
+
+                /* Extra: section-specific card containers */
+                .template-modern #preview-skills .grid > *,
+                .template-modern #preview-projects .grid > *,
+                .template-modern #preview-experience .space-y-4 > *,
+                .template-modern #preview-education .space-y-4 > *,
+                .template-modern #preview-certificates .grid > *,
+                .template-modern #preview-posts .grid > *,
+                .template-minimal #preview-skills .grid > *,
+                .template-minimal #preview-projects .grid > *,
+                .template-minimal #preview-experience .space-y-4 > *,
+                .template-minimal #preview-education .space-y-4 > *,
+                .template-minimal #preview-certificates .grid > *,
+                .template-minimal #preview-posts .grid > *,
+                .template-developer #preview-skills .grid > *,
+                .template-developer #preview-projects .grid > *,
+                .template-developer #preview-experience .space-y-4 > *,
+                .template-developer #preview-education .space-y-4 > *,
+                .template-developer #preview-certificates .grid > *,
+                .template-developer #preview-posts .grid > *,
+                .template-creative #preview-skills .grid > *,
+                .template-creative #preview-projects .grid > *,
+                .template-creative #preview-experience .space-y-4 > *,
+                .template-creative #preview-education .space-y-4 > *,
+                .template-creative #preview-certificates .grid > *,
+                .template-creative #preview-posts .grid > * {
+                    transition:
+                        transform 240ms ease,
+                        border-color 240ms ease,
+                        background-color 240ms ease,
+                        box-shadow 240ms ease;
+                }
+
+                .template-modern #preview-skills .grid > *:hover,
+                .template-modern #preview-projects .grid > *:hover,
+                .template-modern #preview-experience .space-y-4 > *:hover,
+                .template-modern #preview-education .space-y-4 > *:hover,
+                .template-modern #preview-certificates .grid > *:hover,
+                .template-modern #preview-posts .grid > *:hover {
+                    transform: translateY(-5px);
+                    border-color: rgba(34,211,238,0.42) !important;
+                    box-shadow: 0 18px 40px rgba(34,211,238,0.09);
+                }
+
+                .template-minimal #preview-skills .grid > *:hover,
+                .template-minimal #preview-projects .grid > *:hover,
+                .template-minimal #preview-experience .space-y-4 > *:hover,
+                .template-minimal #preview-education .space-y-4 > *:hover,
+                .template-minimal #preview-certificates .grid > *:hover,
+                .template-minimal #preview-posts .grid > *:hover {
+                    transform: translateY(-5px);
+                    border-color: #64748b !important;
+                    box-shadow: 0 16px 34px rgba(15,23,42,0.09);
+                }
+
+                .template-developer #preview-skills .grid > *:hover,
+                .template-developer #preview-projects .grid > *:hover,
+                .template-developer #preview-experience .space-y-4 > *:hover,
+                .template-developer #preview-education .space-y-4 > *:hover,
+                .template-developer #preview-certificates .grid > *:hover,
+                .template-developer #preview-posts .grid > *:hover {
+                    transform: translateX(5px);
+                    border-color: rgba(74,222,128,0.50) !important;
+                    box-shadow: 0 0 26px rgba(74,222,128,0.10);
+                }
+
+                .template-creative #preview-skills .grid > *:hover,
+                .template-creative #preview-projects .grid > *:hover,
+                .template-creative #preview-experience .space-y-4 > *:hover,
+                .template-creative #preview-education .space-y-4 > *:hover,
+                .template-creative #preview-certificates .grid > *:hover,
+                .template-creative #preview-posts .grid > *:hover {
+                    transform: translateY(-6px) rotate(-0.2deg) scale(1.01);
+                    border-color: rgba(217,70,239,0.46) !important;
+                    box-shadow: 0 20px 44px rgba(217,70,239,0.11);
+                }
+
+                /* ========================================
+                   LOCATION + CONTACT CARD HOVER
+                ======================================== */
+
+                .template-modern #preview-contact a,
+                .template-modern #preview-contact > div,
+                .template-minimal #preview-contact a,
+                .template-minimal #preview-contact > div,
+                .template-developer #preview-contact a,
+                .template-developer #preview-contact > div,
+                .template-creative #preview-contact a,
+                .template-creative #preview-contact > div {
+                    transition:
+                        transform 220ms ease,
+                        border-color 220ms ease,
+                        background-color 220ms ease,
+                        box-shadow 220ms ease;
+                }
+
+                .template-modern #preview-contact a:hover,
+                .template-modern #preview-contact > div:hover {
+                    transform: translateY(-5px);
+                    border-color: rgba(34,211,238,0.44) !important;
+                    background-color: rgba(34,211,238,0.035);
+                    box-shadow: 0 14px 34px rgba(34,211,238,0.09);
+                }
+
+                .template-minimal #preview-contact a:hover,
+                .template-minimal #preview-contact > div:hover {
+                    transform: translateY(-5px);
+                    border-color: #475569 !important;
+                    background-color: rgba(248,250,252,0.92);
+                    box-shadow: 0 14px 32px rgba(15,23,42,0.10);
+                }
+
+                .template-developer #preview-contact a:hover,
+                .template-developer #preview-contact > div:hover {
+                    transform: translateX(5px);
+                    border-color: rgba(74,222,128,0.48) !important;
+                    background-color: rgba(74,222,128,0.03);
+                    box-shadow: 0 0 24px rgba(74,222,128,0.10);
+                }
+
+                .template-creative #preview-contact a:hover,
+                .template-creative #preview-contact > div:hover {
+                    transform: translateY(-6px) rotate(-0.2deg);
+                    border-color: rgba(217,70,239,0.46) !important;
+                    background-color: rgba(217,70,239,0.035);
+                    box-shadow: 0 16px 38px rgba(217,70,239,0.11);
+                }
+
+                /* ========================================
+                   PROFILE IMAGE HOVER - ALL TEMPLATES
+                ======================================== */
+
+                .template-modern .profile-image-frame,
+                .template-minimal .profile-image-frame,
+                .template-developer .profile-image-frame,
+                .template-creative .profile-image-frame {
+                    transition:
+                        transform 320ms ease,
+                        box-shadow 320ms ease,
+                        border-color 320ms ease,
+                        background-color 320ms ease;
+                }
+
+                .template-modern .profile-image-frame:hover {
+                    transform: translateY(-7px) scale(1.03) rotate(1deg);
+                    border-color: rgba(34,211,238,0.62) !important;
+                    box-shadow: 0 0 55px rgba(34,211,238,0.22);
+                }
+
+                .template-minimal .profile-image-frame:hover {
+                    transform: translateY(-6px) scale(1.035);
+                    border-color: #475569 !important;
+                    box-shadow: 0 20px 40px rgba(15,23,42,0.16);
+                }
+
+                .template-developer .profile-image-frame:hover {
+                    transform: translateX(7px) scale(1.03);
+                    border-color: rgba(74,222,128,0.64) !important;
+                    box-shadow: 0 0 34px rgba(74,222,128,0.24);
+                }
+
+                .template-creative .profile-image-frame:hover {
+                    transform: translateY(-8px) rotate(-1.2deg) scale(1.03);
+                    border-color: rgba(217,70,239,0.62) !important;
+                    box-shadow: 0 24px 54px rgba(217,70,239,0.18);
+                }
+
+                .profile-image-frame:hover .profile-image-media {
+                    transform: scale(1.06);
+                    filter: saturate(1.08) contrast(1.04);
+                }
+
+                /* ========================================
+                   BUTTON / ACTION LINK HOVER
+                ======================================== */
+
+                .template-modern a[class*="px-"][class*="py-"] {
+                    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+                }
+
+                .template-modern a[class*="px-"][class*="py-"]:hover {
+                    animation-play-state: paused;
+                    transform: translateY(-6px) scale(1.045);
+                    box-shadow: 0 14px 34px rgba(34,211,238,0.22);
+                    border-color: rgba(34,211,238,0.52) !important;
+                }
+
+                .template-minimal a[class*="px-"][class*="py-"] {
+                    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, color 180ms ease;
+                }
+
+                .template-minimal a[class*="px-"][class*="py-"]:hover {
+                    animation-play-state: paused;
+                    transform: translateY(-6px) scale(1.04);
+                    background-color: #0f172a !important;
+                    color: #ffffff !important;
+                    border-color: #0f172a !important;
+                    box-shadow: 0 16px 32px rgba(15,23,42,0.20);
+                }
+
+                .template-developer a[class*="px-"][class*="py-"] {
+                    transition: transform 160ms ease, box-shadow 160ms ease, background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+                }
+
+                .template-developer a[class*="px-"][class*="py-"]:hover {
+                    animation-play-state: paused;
+                    transform: translateY(-5px) translateX(4px);
+                    background-color: rgba(74,222,128,0.14) !important;
+                    border-color: rgba(74,222,128,0.72) !important;
+                    box-shadow: 0 0 28px rgba(74,222,128,0.22);
+                    color: #bbf7d0 !important;
+                }
+
+                .template-creative a[class*="px-"][class*="py-"] {
+                    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease, border-color 180ms ease, filter 180ms ease, color 180ms ease;
+                }
+
+                .template-creative a[class*="px-"][class*="py-"]:hover {
+                    animation-play-state: paused;
+                    transform: translateY(-6px) rotate(-1deg) scale(1.05);
+                    filter: brightness(1.12);
+                    box-shadow: 0 18px 42px rgba(217,70,239,0.24);
+                    border-color: rgba(217,70,239,0.52) !important;
+                }
+
+                /* ========================================
+                   MINIMAL BACKGROUND + TEXT VISIBILITY
+                ======================================== */
+
+                .template-minimal {
+                    background:
+                        radial-gradient(circle at 12% 10%, rgba(148,163,184,0.18), transparent 32%),
+                        radial-gradient(circle at 88% 82%, rgba(203,213,225,0.35), transparent 34%),
+                        linear-gradient(135deg, #f8fafc 0%, #eef2f7 52%, #e2e8f0 100%) !important;
+                    color: #0f172a !important;
+                }
+
+                .template-minimal nav,
+                .template-minimal #preview-home,
+                .template-minimal #preview-about,
+                .template-minimal #preview-skills,
+                .template-minimal #preview-projects,
+                .template-minimal #preview-experience,
+                .template-minimal #preview-education,
+                .template-minimal #preview-certificates,
+                .template-minimal #preview-posts,
+                .template-minimal #preview-contact {
+                    background-color: rgba(255,255,255,0.68);
+                }
+
+                .template-minimal .text-slate-400 {
+                    color: #475569 !important;
+                }
+
+                .template-minimal .text-slate-500 {
+                    color: #334155 !important;
+                }
+
+                .template-minimal .text-slate-600 {
+                    color: #1e293b !important;
+                }
+
+                .template-minimal .text-slate-700 {
+                    color: #0f172a !important;
+                }
+
+                /* ========================================
+                   DISTINCT CONTINUOUS ANIMATIONS
+                ======================================== */
+
+                @keyframes modernNameContinuous {
+                    0%, 100% {
+                        transform: translateY(0);
+                        text-shadow: 0 0 0 rgba(34,211,238,0);
+                    }
+                    50% {
+                        transform: translateY(-5px);
+                        text-shadow: 0 0 26px rgba(34,211,238,0.20);
+                    }
+                }
+
+                @keyframes modernAboutContinuous {
+                    0%, 100% {
+                        opacity: 0.82;
+                        transform: translateX(0);
+                    }
+                    50% {
+                        opacity: 1;
+                        transform: translateX(5px);
+                    }
+                }
+
+                @keyframes modernSeoContinuous {
+                    0%, 100% {
+                        transform: scaleX(1);
+                        box-shadow: 0 0 0 rgba(34,211,238,0);
+                    }
+                    50% {
+                        transform: scaleX(1.015);
+                        box-shadow: 0 0 30px rgba(34,211,238,0.10);
+                    }
+                }
+
+                @keyframes minimalNameContinuous {
+                    0%, 100% {
+                        transform: translateY(0);
+                        letter-spacing: -0.055em;
+                    }
+                    50% {
+                        transform: translateY(-5px);
+                        letter-spacing: -0.045em;
+                    }
+                }
+
+                @keyframes minimalAboutContinuous {
+                    0%, 100% {
+                        border-left-color: #cbd5e1;
+                        transform: translateX(0);
+                    }
+                    50% {
+                        border-left-color: #64748b;
+                        transform: translateX(5px);
+                    }
+                }
+
+                @keyframes minimalSeoContinuous {
+                    0%, 100% {
+                        opacity: 0.88;
+                        transform: translateY(0);
+                    }
+                    50% {
+                        opacity: 1;
+                        transform: translateY(-4px);
+                    }
+                }
+
+                @keyframes developerNameContinuous {
+                    0%, 100% {
+                        transform: translateX(0);
+                        text-shadow: 0 0 0 rgba(74,222,128,0);
+                    }
+                    50% {
+                        transform: translateX(7px);
+                        text-shadow: 0 0 22px rgba(74,222,128,0.20);
+                    }
+                }
+
+                @keyframes developerAboutContinuous {
+                    0%, 100% {
+                        border-left-color: rgba(74,222,128,0.10);
+                        transform: translateX(0);
+                    }
+                    50% {
+                        border-left-color: rgba(74,222,128,0.34);
+                        transform: translateX(6px);
+                    }
+                }
+
+                @keyframes developerSeoContinuous {
+                    0% {
+                        background-position: -360px 0;
+                    }
+                    100% {
+                        background-position: 360px 0;
+                    }
+                }
+
+                @keyframes creativeNameContinuous {
+                    0%, 100% {
+                        transform: translateY(0) rotate(0deg);
+                        filter: saturate(1);
+                    }
+                    50% {
+                        transform: translateY(-6px) rotate(0.8deg);
+                        filter: saturate(1.18);
+                    }
+                }
+
+                @keyframes creativeAboutContinuous {
+                    0%, 100% {
+                        transform: translateY(0) rotate(0deg);
+                        opacity: 0.80;
+                    }
+                    50% {
+                        transform: translateY(-5px) rotate(-0.35deg);
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes creativeSeoContinuous {
+                    0%, 100% {
+                        transform: translateY(0) scale(1);
+                        box-shadow: 0 0 0 rgba(217,70,239,0);
+                    }
+                    50% {
+                        transform: translateY(-4px) scale(1.012);
+                        box-shadow: 0 0 36px rgba(217,70,239,0.13);
+                    }
+                }
+
+                .template-modern #preview-home h2 {
+                    animation: modernNameContinuous 3.6s ease-in-out infinite;
+                }
+
+                .template-modern #preview-about {
+                    animation: modernAboutContinuous 4.4s ease-in-out infinite;
+                }
+
+                .template-modern #preview-seo {
+                    animation: modernSeoContinuous 4.6s ease-in-out infinite;
+                    transform-origin: center;
+                }
+
+                .template-minimal #preview-home h2 {
+                    animation: minimalNameContinuous 3.9s ease-in-out infinite;
+                }
+
+                .template-minimal #preview-about {
+                    animation: minimalAboutContinuous 4.5s ease-in-out infinite;
+                    border-left: 3px solid #cbd5e1;
+                }
+
+                .template-minimal #preview-seo {
+                    animation: minimalSeoContinuous 4.1s ease-in-out infinite;
+                }
+
+                .template-developer #preview-home h2 {
+                    animation: developerNameContinuous 3.1s ease-in-out infinite;
+                }
+
+                .template-developer #preview-about {
+                    animation: developerAboutContinuous 3.8s ease-in-out infinite;
+                }
+
+                .template-developer #preview-seo {
+                    animation: developerSeoContinuous 3.3s linear infinite;
+                    background-image: linear-gradient(
+                        90deg,
+                        transparent 0%,
+                        rgba(74,222,128,0.05) 48%,
+                        transparent 100%
+                    );
+                    background-repeat: no-repeat;
+                    background-size: 360px 100%;
+                }
+
+                .template-creative #preview-home h2 {
+                    animation: creativeNameContinuous 3.7s ease-in-out infinite;
+                }
+
+                .template-creative #preview-about {
+                    animation: creativeAboutContinuous 4.2s ease-in-out infinite;
+                }
+
+                .template-creative #preview-seo {
+                    animation: creativeSeoContinuous 4.4s ease-in-out infinite;
+                }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .template-modern #preview-home h2,
+                    .template-modern #preview-about,
+                    .template-modern #preview-seo,
+                    .template-minimal #preview-home h2,
+                    .template-minimal #preview-about,
+                    .template-minimal #preview-seo,
+                    .template-developer #preview-home h2,
+                    .template-developer #preview-about,
+                    .template-developer #preview-seo,
+                    .template-creative #preview-home h2,
+                    .template-creative #preview-about,
+                    .template-creative #preview-seo {
+                        animation: none !important;
+                        transform: none !important;
+                        filter: none !important;
+                    }
+
+                    .profile-image-frame {
+                        transition: none !important;
+                    }
                 }
             `}</style>
 
