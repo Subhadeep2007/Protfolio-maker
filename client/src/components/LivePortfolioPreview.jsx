@@ -4306,6 +4306,9 @@ const LivePortfolioPreview = ({
                 .template-minimal #preview-experience h3 {
     color: #0f172a !important;
 }
+    .template-minimal #preview-experience:hover h3 {
+    color: #0f172a !important;
+}
                 .template-minimal nav,
                 .template-minimal #preview-home,
                 .template-minimal #preview-about,
