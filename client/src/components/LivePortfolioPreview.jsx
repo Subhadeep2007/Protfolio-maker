@@ -3068,16 +3068,7 @@ const LivePortfolioPreview = ({
                         </div>
                         <div className="space-y-6">
                             {sortedExperiences.map((experience) => (
-                                <div key={experience._id} className="border-l-2 pl-5" style={{ borderColor: `${primary}55` }}>
-                                    <div className="flex flex-col justify-between gap-2 sm:flex-row">
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-slate-950">{experience.jobTitle}</h3>
-                                            {experience.company ? <p className="mt-1 text-sm font-medium" style={{ color: primary }}>{experience.company}</p> : null}
-                                        </div>
-                                        <p className="text-xs text-slate-400">{formatDate(experience.startDate)}{experience.startDate || experience.endDate ? " — " : ""}{experience.currentlyWorking ? "Present" : formatDate(experience.endDate)}</p>
-                                    </div>
-                                    {experience.description ? <p className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-500">{experience.description}</p> : null}
-                                </div>
+                                <ExperienceCard key={experience._id} experience={experience} primary={primary} />
                             ))}
                         </div>
                     </div>
@@ -3440,12 +3431,7 @@ const LivePortfolioPreview = ({
                     <p className="text-[10px] text-slate-600">04 // experience.log</p>
                     <div className="mt-5 space-y-4">
                         {sortedExperiences.map((experience) => (
-                            <article key={experience._id} className="border border-emerald-400/10 bg-emerald-400/[0.02] p-4">
-                                <h3 className="text-sm font-bold text-emerald-300">{experience.jobTitle}</h3>
-                                {experience.company ? <p className="mt-1 text-xs text-cyan-300">{experience.company}</p> : null}
-                                <p className="mt-1 text-[9px] text-slate-600">{formatDate(experience.startDate)}{experience.startDate || experience.endDate ? " → " : ""}{experience.currentlyWorking ? "Present" : formatDate(experience.endDate)}</p>
-                                {experience.description ? <p className="mt-3 whitespace-pre-line text-xs leading-6 text-slate-500">{experience.description}</p> : null}
-                            </article>
+                            <ExperienceCard key={experience._id} experience={experience} primary={primary} />
                         ))}
                     </div>
                 </section>
@@ -3809,16 +3795,7 @@ const LivePortfolioPreview = ({
                         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-200">04 · Experience</p>
                         <div className="mt-6 grid gap-4">
                             {sortedExperiences.map((experience) => (
-                                <article key={experience._id} className="rounded-2xl border border-white/10 bg-black/10 p-5">
-                                    <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
-                                        <div>
-                                            <h3 className="text-lg font-black">{experience.jobTitle}</h3>
-                                            {experience.company ? <p className="mt-1 text-sm text-fuchsia-200">{experience.company}</p> : null}
-                                        </div>
-                                        <p className="text-[10px] text-slate-500">{formatDate(experience.startDate)}{experience.startDate || experience.endDate ? " — " : ""}{experience.currentlyWorking ? "Present" : formatDate(experience.endDate)}</p>
-                                    </div>
-                                    {experience.description ? <p className="mt-4 whitespace-pre-line text-sm leading-7 text-slate-400">{experience.description}</p> : null}
-                                </article>
+                                <ExperienceCard key={experience._id} experience={experience} primary={primary} />
                             ))}
                         </div>
                     </div>
