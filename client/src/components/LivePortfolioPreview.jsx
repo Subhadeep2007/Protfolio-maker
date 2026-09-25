@@ -4303,7 +4303,9 @@ const LivePortfolioPreview = ({
                         linear-gradient(135deg, #f8fafc 0%, #eef2f7 52%, #e2e8f0 100%) !important;
                     color: #0f172a !important;
                 }
-
+                .template-minimal #preview-experience h3 {
+    color: #0f172a !important;
+}
                 .template-minimal nav,
                 .template-minimal #preview-home,
                 .template-minimal #preview-about,
