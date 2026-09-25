@@ -4548,6 +4548,242 @@ const LivePortfolioPreview = ({
                     animation: creativeSeoContinuous 4.4s ease-in-out infinite;
                 }
 
+
+                /* ========================================
+                   LIVE COLOR PREVIEW - ALL NON-MODERN TEMPLATES
+                   Uses the existing primary/secondary color values.
+                   Modern template is intentionally untouched.
+                ======================================== */
+
+                .template-minimal,
+                .template-developer,
+                .template-creative {
+                    --preview-primary: ${primary};
+                    --preview-secondary: ${secondary};
+                }
+
+                /* ----------------------------------------
+                   MINIMAL - color-aware background + text
+                ---------------------------------------- */
+
+                .template-minimal {
+                    background:
+                        radial-gradient(
+                            circle at 10% 8%,
+                            color-mix(in srgb, var(--preview-primary) 18%, transparent),
+                            transparent 34%
+                        ),
+                        radial-gradient(
+                            circle at 88% 82%,
+                            color-mix(in srgb, var(--preview-secondary) 16%, transparent),
+                            transparent 36%
+                        ),
+                        linear-gradient(
+                            135deg,
+                            color-mix(in srgb, var(--preview-secondary) 7%, #ffffff 93%) 0%,
+                            color-mix(in srgb, var(--preview-primary) 5%, #f8fafc 95%) 52%,
+                            color-mix(in srgb, var(--preview-secondary) 10%, #eef2f7 90%) 100%
+                        ) !important;
+                    color: #0f172a !important;
+                }
+
+                .template-minimal nav,
+                .template-minimal #preview-home,
+                .template-minimal #preview-about,
+                .template-minimal #preview-skills,
+                .template-minimal #preview-projects,
+                .template-minimal #preview-experience,
+                .template-minimal #preview-education,
+                .template-minimal #preview-certificates,
+                .template-minimal #preview-posts,
+                .template-minimal #preview-contact {
+                    background-color: color-mix(
+                        in srgb,
+                        #ffffff 82%,
+                        var(--preview-secondary) 18%
+                    ) !important;
+                }
+
+                .template-minimal .text-slate-950,
+                .template-minimal .text-slate-900 {
+                    color: #0f172a !important;
+                }
+
+                .template-minimal .text-slate-700 {
+                    color: #1e293b !important;
+                }
+
+                .template-minimal .text-slate-600 {
+                    color: #334155 !important;
+                }
+
+                .template-minimal .text-slate-500,
+                .template-minimal .text-slate-400 {
+                    color: #475569 !important;
+                }
+
+                .template-minimal .border-slate-200,
+                .template-minimal .border-slate-300 {
+                    border-color: color-mix(
+                        in srgb,
+                        var(--preview-primary) 18%,
+                        #cbd5e1 82%
+                    ) !important;
+                }
+
+                .template-minimal [style*="background-color:"] {
+                    /* Preserve existing inline color logic where present. */
+                }
+
+                .template-minimal #preview-home a.rounded-full.bg-slate-950 {
+                    background-color: var(--preview-primary) !important;
+                    color: #0f172a !important;
+                }
+
+                .template-minimal a:hover {
+                    text-decoration-thickness: 2px;
+                }
+
+                /* ----------------------------------------
+                   DEVELOPER - primary = terminal green,
+                   secondary = cyan accent, both live
+                ---------------------------------------- */
+
+                .template-developer .text-emerald-50,
+                .template-developer .text-emerald-300,
+                .template-developer .text-emerald-400,
+                .template-developer .text-emerald-500 {
+                    color: var(--preview-primary) !important;
+                }
+
+                .template-developer .text-cyan-300 {
+                    color: var(--preview-secondary) !important;
+                }
+
+                .template-developer [class~="bg-emerald-400/10"],
+                .template-developer [class~="bg-emerald-400/[0.02]"],
+                .template-developer [class~="bg-emerald-400/[0.03]"] {
+                    background-color: color-mix(
+                        in srgb,
+                        var(--preview-primary) 10%,
+                        transparent
+                    ) !important;
+                }
+
+                .template-developer [class~="border-emerald-400/10"],
+                .template-developer [class~="border-emerald-400/15"],
+                .template-developer [class~="border-emerald-400/20"],
+                .template-developer [class~="border-emerald-400/30"] {
+                    border-color: color-mix(
+                        in srgb,
+                        var(--preview-primary) 34%,
+                        transparent
+                    ) !important;
+                }
+
+                .template-developer [class~="border-cyan-400/20"] {
+                    border-color: color-mix(
+                        in srgb,
+                        var(--preview-secondary) 42%,
+                        transparent
+                    ) !important;
+                }
+
+                .template-developer #preview-home > div:first-child {
+                    background-image:
+                        linear-gradient(
+                            color-mix(in srgb, var(--preview-primary) 24%, transparent) 1px,
+                            transparent 1px
+                        ),
+                        linear-gradient(
+                            90deg,
+                            color-mix(in srgb, var(--preview-primary) 24%, transparent) 1px,
+                            transparent 1px
+                        ) !important;
+                }
+
+                /* ----------------------------------------
+                   CREATIVE - primary = pink/fuchsia,
+                   secondary = cyan/violet accent
+                ---------------------------------------- */
+
+                .template-creative .text-fuchsia-200,
+                .template-creative .text-fuchsia-300 {
+                    color: var(--preview-primary) !important;
+                }
+
+                .template-creative .text-cyan-200,
+                .template-creative .text-cyan-300 {
+                    color: var(--preview-secondary) !important;
+                }
+
+                .template-creative [class~="bg-fuchsia-400"] {
+                    background-color: var(--preview-primary) !important;
+                }
+
+                .template-creative [class~="bg-fuchsia-500/20"] {
+                    background-color: color-mix(
+                        in srgb,
+                        var(--preview-primary) 20%,
+                        transparent
+                    ) !important;
+                }
+
+                .template-creative [class~="bg-cyan-400/15"] {
+                    background-color: color-mix(
+                        in srgb,
+                        var(--preview-secondary) 15%,
+                        transparent
+                    ) !important;
+                }
+
+                .template-creative [class~="bg-violet-500/15"] {
+                    background-color: color-mix(
+                        in srgb,
+                        var(--preview-secondary) 15%,
+                        transparent
+                    ) !important;
+                }
+
+                .template-creative [class~="border-fuchsia-400/20"],
+                .template-creative [class~="border-fuchsia-300/30"] {
+                    border-color: color-mix(
+                        in srgb,
+                        var(--preview-primary) 36%,
+                        transparent
+                    ) !important;
+                }
+
+                .template-creative [class~="border-cyan-300/30"] {
+                    border-color: color-mix(
+                        in srgb,
+                        var(--preview-secondary) 40%,
+                        transparent
+                    ) !important;
+                }
+
+                .template-creative [class~="bg-gradient-to-br"] {
+                    background-image: linear-gradient(
+                        135deg,
+                        color-mix(in srgb, var(--preview-secondary) 20%, transparent),
+                        color-mix(in srgb, var(--preview-primary) 20%, transparent)
+                    ) !important;
+                }
+
+                .template-creative #preview-home a.rounded-full.bg-fuchsia-400 {
+                    background-color: var(--preview-primary) !important;
+                }
+
+                /* Keep color preview transitions smooth. */
+                .template-minimal,
+                .template-developer,
+                .template-creative {
+                    transition:
+                        background 260ms ease,
+                        color 220ms ease,
+                        border-color 220ms ease;
+                }
+
                 @media (prefers-reduced-motion: reduce) {
                     .template-modern #preview-home h2,
                     .template-modern #preview-about,
