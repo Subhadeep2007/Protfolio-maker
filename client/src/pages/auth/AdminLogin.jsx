@@ -96,7 +96,7 @@ const AdminLogin = () => {
 
 
             if (
-                response?.requiresEmailVerification
+                response?.data?.requiresEmailVerification
             ) {
 
                 navigate(
@@ -104,7 +104,7 @@ const AdminLogin = () => {
                     {
                         state: {
                             email:
-                                response.email,
+                                response.data.email,
                             admin: true
                         }
                     }
